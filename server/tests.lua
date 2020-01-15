@@ -199,6 +199,52 @@ TESTS = {
         assert(tree._rootNode:getRight():getRight():getValue() == 8)
         assert(tree._rootNode:getRight():getRight():getColor() == TreeNodeColor.RED)
     end,
+    function()
+        -- Test getNodeByValue
+
+        local tree = Tree()
+
+        local one = TreeNode(1)
+        local four = TreeNode(4)
+        local five = TreeNode(5)
+
+        tree:insertNode(TreeNode(10))
+        tree:insertNode(TreeNode(9))
+        tree:insertNode(TreeNode(8))
+        tree:insertNode(TreeNode(7))
+        tree:insertNode(TreeNode(6))
+        tree:insertNode(five)
+        tree:insertNode(four)
+        tree:insertNode(TreeNode(3))
+        tree:insertNode(TreeNode(2))
+        tree:insertNode(one)
+
+        assert(tree:getNodeByValue(1) == one)
+        assert(tree:getNodeByValue(4) == four)
+        assert(tree:getNodeByValue(5) == five)
+    end,
+    function()
+        -- Test getNodesInRange
+
+        local tree = Tree()
+        tree:insertNode(TreeNode(1))
+        tree:insertNode(TreeNode(2))
+        tree:insertNode(TreeNode(3))
+        tree:insertNode(TreeNode(4))
+        tree:insertNode(TreeNode(5))
+        tree:insertNode(TreeNode(6))
+        tree:insertNode(TreeNode(7))
+        tree:insertNode(TreeNode(8))
+        tree:insertNode(TreeNode(9))
+        tree:insertNode(TreeNode(10))
+
+        local nodes = tree:getNodesInRange(4, 7)
+        assert(#nodes == 4)
+
+        for _, n in pairs(nodes) do
+            assert(4 <= n:getValue() and n:getValue() <= 7)
+        end
+    end,
 }
 
 addEventHandler('onResourceStart', resourceRoot, function()

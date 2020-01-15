@@ -5,6 +5,12 @@ TreeNodeColor = {
     BLACK = 0,
 }
 
+local function mergeLists(list1, list2)
+    for _, v in ipairs(list2) do
+        table.insert(list1, v)
+    end
+end
+
 local TreeNodeClass = {
     left = nil,
     right = nil,
@@ -203,6 +209,36 @@ local TreeNodeClass = {
 
         newParent.parent = parent
     end,
+
+    _getNodesInRange = function(self, min, max)
+        local nodes = {}
+
+        if min < self.value and self.left ~= nil then
+            mergeLists(nodes, self.left:_getNodesInRange(min, max))
+        end
+        if min <= self.value and self.value <= max then
+            table.insert(nodes, self)
+        end
+        if max > self.value and self.right ~= nil then
+            mergeLists(nodes, self.right:_getNodesInRange(min, max))
+        end
+
+        return nodes
+    end,
+
+    _getNodeByValue = function(self, value)
+        if self.value == value then
+            return self
+        end
+
+        if self.value < value and self.right ~= nil then
+            return self.right:_getNodeByValue(value)
+        end
+        if self.left ~= nil then
+            return self.left:_getNodeByValue(value)
+        end
+        return nil
+    end,
 }
 
 function TreeNode(value, data)
@@ -228,6 +264,24 @@ local TreeClass = {
             self._rootNode = self._rootNode.parent
         end
     end,
+
+    getNodesInRange = function(self, min, max)
+        assert(min < max)
+        if self._rootNode == nil then
+            return {}
+        end
+
+        return self._rootNode:_getNodesInRange(min, max)
+    end,
+
+    getNodeByValue = function(self, value)
+        if self._rootNode == nil then
+            return nil
+        end
+
+        return self._rootNode:_getNodeByValue(value)
+    end,
+
 }
 
 function Tree()
