@@ -1,0 +1,14 @@
+<meta>
+    <info type="script" author="Toliak" />
+
+    <script type="server" cache="false" src="server/core.lua" />
+
+    <script type="client" cache="false" src="client/core.lua" />
+
+    <script type="server" cache="false" src="server/tests.lua" />
+
+    <script type="client" cache="false" src="shared/tree.lua" />
+    <script type="server" cache="false" src="shared/tree.lua" />
+
+    <oop>true</oop>
+</meta>
