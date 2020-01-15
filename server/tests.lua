@@ -61,14 +61,8 @@ TESTS = {
         local rootNode = testTree()
         local parentLeft = rootNode:getLeft()
 
-        if parentLeft == nil then
-            iprint('parentLeft == nil')
-            return false
-        end
-        if parentLeft:getValue() ~= 'parentLeft' then
-            iprint("parentLeft:getValue() ~= 'parentLeft'")
-            return false
-        end
+        assert(parentLeft ~= nil)
+        assert(parentLeft:getValue() == 'parentLeft')
     end,
     function()
         -- checks tree structure
@@ -76,14 +70,8 @@ TESTS = {
         local rootNode = testTree()
         local left = rootNode:getLeft():getLeft()
 
-        if left == nil then
-            iprint('left == nil')
-            return false
-        end
-        if left:getValue() ~= 'left' then
-            iprint("left:getValue() ~= 'left'")
-            return false
-        end
+        assert(left ~= nil)
+        assert(left:getValue() == 'left')
     end,
     function()
         -- checks getSibling
@@ -91,14 +79,8 @@ TESTS = {
         local rootNode = testTree()
         local right = rootNode:getLeft():getLeft():getSibling()
 
-        if right == nil then
-            iprint('right == nil')
-            return false
-        end
-        if right:getValue() ~= 'right' then
-            iprint("right:getValue() ~= 'right'")
-            return false
-        end
+        assert(right ~= nil)
+        assert(right:getValue() == 'right')
     end,
     function()
         -- checks getGrandParent
@@ -106,14 +88,8 @@ TESTS = {
         local rootNode = testTree()
         local grandparent = rootNode:getLeft():getLeft():getGrandParent()
 
-        if grandparent == nil then
-            iprint('grandparent == nil')
-            return false
-        end
-        if grandparent:getValue() ~= 'rootNode' then
-            iprint("grandparent:getValue() ~= 'rootNode'")
-            return false
-        end
+        assert(grandparent ~= nil)
+        assert(grandparent:getValue() == 'rootNode')
     end,
     function()
         -- checks rotateLeft
@@ -124,18 +100,9 @@ TESTS = {
 
         rootNode:rotateLeft()
 
-        if parentRight:getParent() ~= nil then
-            iprint("parentRight:getParent() ~= nil")
-            return false
-        end
-        if parentRight:getLeft() ~= rootNode then
-            iprint("parentRight:getLeft() ~= rootNode")
-            return false
-        end
-        if parentRight:getRight() ~= right then
-            iprint("parentRight:getRight() ~= right")
-            return false
-        end
+        assert(parentRight:getParent() == nil)
+        assert(parentRight:getLeft() == rootNode)
+        assert(parentRight:getRight() == right)
     end,
     function()
         -- checks rotateRight
@@ -146,18 +113,9 @@ TESTS = {
 
         rootNode:rotateRight()
 
-        if parentLeft:getParent() ~= nil then
-            iprint("parentLeft:getParent() ~= nil")
-            return false
-        end
-        if parentLeft:getRight() ~= rootNode then
-            iprint("parentLeft:getRight() ~= rootNode")
-            return false
-        end
-        if parentLeft:getLeft() ~= left then
-            iprint("parentLeft:getLeft() ~= left")
-            return false
-        end
+        assert(parentLeft:getParent() == nil)
+        assert(parentLeft:getRight() == rootNode)
+        assert(parentLeft:getLeft() == left)
     end,
     function()
         -- Simple insert test
@@ -165,14 +123,8 @@ TESTS = {
         local tree = Tree()
         tree:insertNode(TreeNode(10))
 
-        if tree._rootNode == nil then
-            iprint("tree._rootNode == nil")
-            return false
-        end
-        if tree._rootNode:getValue() ~= 10 then
-            iprint("tree._rootNode:getValue() ~= 10")
-            return false
-        end
+        assert(tree._rootNode ~= nil)
+        assert(tree._rootNode:getValue() == 10)
     end,
     function()
         -- Test insert with rotation
@@ -182,14 +134,8 @@ TESTS = {
         tree:insertNode(TreeNode(9))
         tree:insertNode(TreeNode(8))
 
-        if tree._rootNode == nil then
-            iprint("tree._rootNode == nil")
-            return false
-        end
-        if tree._rootNode:getValue() ~= 9 then
-            iprint("tree._rootNode:getValue() ~= 9")
-            return false
-        end
+        assert(tree._rootNode ~= nil)
+        assert(tree._rootNode:getValue() == 9)
     end,
     function()
         -- Test insert with 10 numbers
