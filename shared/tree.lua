@@ -58,7 +58,7 @@ local TreeNodeClass = {
             local parent = self.parent
             local grandparent = self:getGrandParent()
 
-            local next = nil
+            local next = self
             if self == parent.right and parent == grandparent.left then
                 parent:rotateLeft()
                 next = self.left
@@ -205,10 +205,14 @@ local TreeNodeClass = {
     end,
 }
 
-function TreeNode()
-    return setmetatable({}, {
+function TreeNode(value, data)
+    local node = setmetatable({}, {
         __index = TreeNodeClass,
     })
+    node:setValue(value)
+    node.data = data
+
+    return node
 end
 
 local TreeClass = {
