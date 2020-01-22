@@ -48,6 +48,7 @@ local function testTreeRotate()
 end
 
 TESTS = {
+    -- TreeNode tests
     function()
         -- checks rootNode value
 
@@ -117,6 +118,8 @@ TESTS = {
         assert(parentLeft:getRight() == rootNode)
         assert(parentLeft:getLeft() == left)
     end,
+
+    -- Tree tests
     function()
         -- Simple insert test
 
@@ -320,6 +323,57 @@ TESTS = {
         assert(node == resultNode)
     end,
 
+    -- Tree2D tests
+    function()
+        -- Test insert simple
+
+        local tree2d = Tree2D()
+        tree2d:insert(Vector2(2, 5), 'correct')
+
+        assert(tree2d._tree ~= nil)
+        assert(tree2d._tree._rootNode ~= nil)
+        assert(tree2d._tree._rootNode.value == 2)       -- contains x
+
+        local treeY = tree2d._tree._rootNode.data
+        assert(treeY ~= nil)
+        assert(treeY._rootNode ~= nil)
+        assert(treeY._rootNode.value == 5)       -- contains y
+
+        assert(treeY._rootNode.data == 'correct')
+    end,
+    function()
+        -- Test insert and find
+
+        local tree2d = Tree2D()
+        tree2d:insert(Vector2(2, 5), 'correct')
+
+        assert(tree2d:find(Vector2(2, 5)) == 'correct')
+    end,
+    function()
+        -- Test insert and bad find
+
+        local tree2d = Tree2D()
+        tree2d:insert(Vector2(2, 5), 'correct')
+
+        assert(tree2d:find(Vector2(3, 5)) == nil)
+        assert(tree2d:find(Vector2(2, 4)) == nil)
+    end,
+    function()
+        -- Test findInRectangle
+        -- https://www.desmos.com/calculator/kncl44emvc
+
+        local tree2d = Tree2D()
+        tree2d:insert(Vector2(1, 1), 'incorrect')
+        tree2d:insert(Vector2(-2, 6), 'correct')
+        tree2d:insert(Vector2(0, 4), 'correct')
+        tree2d:insert(Vector2(-5, 2), 'incorrect')
+        tree2d:insert(Vector2(-1, 8), 'incorrect')
+
+        local list = tree2d:findInRectangle(Vector2(-3, 6), Vector2(1, 2))
+        assert(#list == 2)
+        assert(list[1] == 'correct')
+        assert(list[2] == 'correct')
+    end,
 }
 
 addEventHandler('onResourceStart', resourceRoot, function()

@@ -9,6 +9,8 @@
 
     <script type="client" cache="false" src="shared/tree.lua" />
     <script type="server" cache="false" src="shared/tree.lua" />
+    <script type="client" cache="false" src="shared/tree2d.lua" />
+    <script type="server" cache="false" src="shared/tree2d.lua" />
 
     <oop>true</oop>
 </meta>

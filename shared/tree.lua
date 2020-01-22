@@ -5,7 +5,7 @@ TreeNodeColor = {
     BLACK = 0,
 }
 
-local function mergeLists(list1, list2)
+function mergeLists(list1, list2)
     for _, v in ipairs(list2) do
         table.insert(list1, v)
     end
