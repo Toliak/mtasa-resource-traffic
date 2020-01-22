@@ -239,6 +239,31 @@ local TreeNodeClass = {
         end
         return nil
     end,
+
+    _getNodeByValueOrInsert = function(self, rootNode)
+        if rootNode ~= nil then
+            if self.value == rootNode.value then
+                return rootNode
+            elseif self.value < rootNode.value then
+                if rootNode.left ~= nil then
+                    return self:_getNodeByValueOrInsert(rootNode.left)
+                end
+
+                rootNode.left = self
+            else
+                if rootNode.right ~= nil then
+                    return self:_getNodeByValueOrInsert(rootNode.right)
+                end
+
+                rootNode.right = self
+            end
+        end
+
+        self.parent = rootNode
+        self.color = TreeNodeColor.RED
+
+        return self
+    end,
 }
 
 function TreeNode(value, data)
@@ -281,6 +306,16 @@ local TreeClass = {
 
         return self._rootNode:_getNodeByValue(value)
     end,
+
+    getNodeByValueOrInsert = function(self, node)
+        if self._rootNode == nil then
+            self._rootNode = node
+
+            return node
+        end
+
+        return node:_getNodeByValueOrInsert(self._rootNode)
+    end
 
 }
 

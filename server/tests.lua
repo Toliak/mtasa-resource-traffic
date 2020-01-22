@@ -224,6 +224,30 @@ TESTS = {
         assert(tree:getNodeByValue(5) == five)
     end,
     function()
+        -- Test getNodeByValue (not existing)
+
+        local tree = Tree()
+
+        tree:insertNode(TreeNode(10))
+        tree:insertNode(TreeNode(9))
+        tree:insertNode(TreeNode(8))
+        tree:insertNode(TreeNode(7))
+        tree:insertNode(TreeNode(6))
+
+        assert(tree:getNodeByValue(1) == nil)
+        assert(tree:getNodeByValue(4) == nil)
+        assert(tree:getNodeByValue(5) == nil)
+    end,
+    function()
+        -- Test getNodeByValue (not existing, empty tree)
+
+        local tree = Tree()
+
+        assert(tree:getNodeByValue(1) == nil)
+        assert(tree:getNodeByValue(4) == nil)
+        assert(tree:getNodeByValue(5) == nil)
+    end,
+    function()
         -- Test getNodesInRange
 
         local tree = Tree()
@@ -245,6 +269,57 @@ TESTS = {
             assert(4 <= n:getValue() and n:getValue() <= 7)
         end
     end,
+    function()
+        -- Test getNodeByValueOrInsert (existing)
+
+        local tree = Tree()
+        tree:insertNode(TreeNode(1))
+        tree:insertNode(TreeNode(2))
+        tree:insertNode(TreeNode(3))
+        tree:insertNode(TreeNode(4))
+        tree:insertNode(TreeNode(5))
+        tree:insertNode(TreeNode(6))
+        tree:insertNode(TreeNode(7))
+        tree:insertNode(TreeNode(8))
+        tree:insertNode(TreeNode(9))
+        tree:insertNode(TreeNode(10))
+
+        local node = tree:getNodeByValue(4)
+        local resultNode = tree:getNodeByValueOrInsert(node)
+
+        assert(node == resultNode)
+    end,
+    function()
+        -- Test getNodeByValueOrInsert (not existing)
+
+        local tree = Tree()
+        tree:insertNode(TreeNode(1))
+        tree:insertNode(TreeNode(2))
+        tree:insertNode(TreeNode(3))
+        tree:insertNode(TreeNode(4))
+        tree:insertNode(TreeNode(5))
+        tree:insertNode(TreeNode(6))
+        tree:insertNode(TreeNode(7))
+        tree:insertNode(TreeNode(8))
+        tree:insertNode(TreeNode(9))
+        tree:insertNode(TreeNode(10))
+
+        local node = TreeNode(11)
+        local resultNode = tree:getNodeByValueOrInsert(node)
+
+        assert(node == resultNode)
+    end,
+    function()
+        -- Test getNodeByValueOrInsert (not existing root)
+
+        local tree = Tree()
+
+        local node = TreeNode(2)
+        local resultNode = tree:getNodeByValueOrInsert(node)
+
+        assert(node == resultNode)
+    end,
+
 }
 
 addEventHandler('onResourceStart', resourceRoot, function()
