@@ -396,6 +396,11 @@ TESTS = {
         assert(list[3] == 'correct')
         assert(list[4] == 'correct')
     end,
+
+    -- TODO: Tree3D tests
+    -- findInCuboid https://www.geogebra.org/3d/rxjsvjur
+    -- findInSphere https://www.geogebra.org/3d/tdzpdhgd
+
 }
 
 addEventHandler('onResourceStart', resourceRoot, function()
