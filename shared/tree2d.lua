@@ -1,3 +1,7 @@
+local function sqr(x)
+    return x * x
+end
+
 local Tree2DClass = {
     _tree = nil,
 
@@ -35,10 +39,36 @@ local Tree2DClass = {
         -- list of nodes with trees inside
         local nodeList = self._tree:getNodesInRange(leftUpCorner.x, rightDownCorner.x)
 
-        for _, node in pairs(nodeList) do       -- every node has xorrect X only
+        for _, node in pairs(nodeList) do
+            -- every node has correct X only
+
             local tree = node.data
 
             local insideResult = tree:getNodesInRange(rightDownCorner.y, leftUpCorner.y)   -- nodes with correct X and Y
+            for _, resultNode in ipairs(insideResult) do
+                table.insert(result, resultNode.data)           -- save only data
+            end
+        end
+
+        return result
+    end,
+
+    findInCircle = function(self, center, radius)
+        local result = {}
+
+        -- list of nodes with trees inside
+        local nodeList = self._tree:getNodesInRange(center.x - radius, center.x + radius)
+
+        for _, node in pairs(nodeList) do
+            -- every node has correct X only
+
+            local tree = node.data
+
+            local x = node.value
+            local yTop = math.sqrt(sqr(radius) - sqr(x - center.x)) + center.y
+            local yBottom = -math.sqrt(sqr(radius) - sqr(x - center.x)) + center.y
+
+            local insideResult = tree:getNodesInRange(yBottom, yTop)   -- nodes with correct X and Y
             for _, resultNode in ipairs(insideResult) do
                 table.insert(result, resultNode.data)           -- save only data
             end

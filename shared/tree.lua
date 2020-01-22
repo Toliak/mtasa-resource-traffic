@@ -291,7 +291,7 @@ local TreeClass = {
     end,
 
     getNodesInRange = function(self, min, max)
-        assert(min < max)
+        assert(min <= max)
         if self._rootNode == nil then
             return {}
         end

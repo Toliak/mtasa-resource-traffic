@@ -374,6 +374,28 @@ TESTS = {
         assert(list[1] == 'correct')
         assert(list[2] == 'correct')
     end,
+    function()
+        -- Test findInCircle
+        -- https://www.desmos.com/calculator/fczkgvok5u
+
+        local tree2d = Tree2D()
+        tree2d:insert(Vector2(0,0), 'correct')
+        tree2d:insert(Vector2(1,0), 'incorrect')
+        tree2d:insert(Vector2(0,2), 'correct')
+        tree2d:insert(Vector2(0,3), 'incorrect')
+        tree2d:insert(Vector2(-1,-1), 'correct')
+        tree2d:insert(Vector2(-1,4), 'incorrect')
+        tree2d:insert(Vector2(-3,1), 'correct')
+        tree2d:insert(Vector2(-3,0), 'incorrect')
+        tree2d:insert(Vector2(-2,3), 'incorrect')
+
+        local list = tree2d:findInCircle(Vector2(-1, 1), 2)
+        assert(#list == 4)
+        assert(list[1] == 'correct')
+        assert(list[2] == 'correct')
+        assert(list[3] == 'correct')
+        assert(list[4] == 'correct')
+    end,
 }
 
 addEventHandler('onResourceStart', resourceRoot, function()
