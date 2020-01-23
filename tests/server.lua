@@ -47,7 +47,7 @@ local function testTreeRotate()
     return rootNode
 end
 
-TESTS = {
+SERVER_TESTS = {
     -- TreeNode tests
     function()
         -- checks rootNode value
@@ -506,21 +506,3 @@ TESTS = {
         assert(pathNode:getPosition().z == 1)
     end
 }
-
-addEventHandler('onResourceStart', resourceRoot, function()
-    local failedTests = 0
-
-    for i, testFunction in ipairs(TESTS) do
-        local returned, error = pcall(testFunction)
-
-        if returned == false then
-            failedTests = failedTests + 1
-            iprint('failed test ', i)
-            iprint(error)
-        end
-
-    end
-
-    iprint('====[TRAFFIC TESTS]====')
-    iprint('Failed ', failedTests, 'from', #TESTS)
-end)

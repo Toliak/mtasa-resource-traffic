@@ -4,7 +4,6 @@
     <!-- Server-side -->
 
     <script type="server" cache="false" src="server/core.lua" />
-    <script type="server" cache="false" src="server/tests.lua" />
 
     <!-- Client-side -->
 
@@ -30,6 +29,14 @@
 
     <script type="client" cache="false" src="shared/path.lua" />
     <script type="server" cache="false" src="shared/path.lua" />
+
+    <!-- Tests -->
+
+    <script type="client" cache="false" src="tests/client.lua" />
+    <script type="server" cache="false" src="tests/server.lua" />
+
+    <script type="client" cache="false" src="tests/core.lua" />
+    <script type="server" cache="false" src="tests/core.lua" />
 
     <oop>true</oop>
 </meta>
