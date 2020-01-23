@@ -460,13 +460,30 @@ TESTS = {
         tree3d:insert(Vector3(10, 6, 2), 'incorrect')
 
         local list = tree3d:findInCuboid(Vector3(-1, -1, 1), Vector3(10, 8, 4))
-        iprint(#list)
         assert(#list == 2)
         assert(list[1] == 'correct')
         assert(list[2] == 'correct')
     end,
+    function()
+        -- Test findInSphere
+        -- https://www.geogebra.org/3d/tdzpdhgd
 
-    -- findInSphere https://www.geogebra.org/3d/tdzpdhgd
+        local tree3d = Tree3D()
+        tree3d:insert(Vector3(-5, -3, 0), 'incorrect')
+        tree3d:insert(Vector3(-4, 0, 0), 'incorrect')
+        tree3d:insert(Vector3(-9, 2, 0), 'incorrect')
+        tree3d:insert(Vector3(-6, 1, -2), 'incorrect')
+        tree3d:insert(Vector3(-6, 1, -1), 'correct')
+        tree3d:insert(Vector3(-6, 1, 1), 'correct')
+        tree3d:insert(Vector3(-9, 0, 1), 'incorrect')
+        tree3d:insert(Vector3(-9, 0, 0), 'correct')
+
+        local list = tree3d:findInSphere(Vector3(-7, 0, 0), 2)
+        assert(#list == 3)
+        assert(list[1] == 'correct')
+        assert(list[2] == 'correct')
+        assert(list[3] == 'correct')
+    end,
 
 }
 

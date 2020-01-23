@@ -40,8 +40,8 @@ local Tree3DClass = {
             local tree2d = node.data
 
             local insideResult = tree2d:findInRectangle(
-                    Vector2(corner.y, corner.z + depth.z),          --left up
-                    Vector2(corner.y + depth.y, corner.z)           --right down
+                    Vector2(corner.y, corner.z + depth.z),          -- left up
+                    Vector2(corner.y + depth.y, corner.z)           -- right down
             )
             for _, data in ipairs(insideResult) do
                 table.insert(result, data)
@@ -52,7 +52,27 @@ local Tree3DClass = {
     end,
 
     findInSphere = function(self, center, radius)
-        return nil      -- TODO TODO TODO
+        local result = {}
+
+        -- list of nodes with trees inside
+        local nodeList = self._tree:getNodesInRange(center.x - radius, center.x + radius)
+
+        for _, node in pairs(nodeList) do
+            -- every node has correct X only
+
+            local x = node.value
+            local tree2d = node.data
+
+            local insideResult = tree2d:findInCircle(
+                    Vector2(center.y, center.z),                            -- center
+                    math.sqrt(sqr(radius) - sqr(x - center.x))      -- radius
+            )
+            for _, data in ipairs(insideResult) do
+                table.insert(result, data)
+            end
+        end
+
+        return result
     end,
 }
 
