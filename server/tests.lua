@@ -379,15 +379,15 @@ TESTS = {
         -- https://www.desmos.com/calculator/fczkgvok5u
 
         local tree2d = Tree2D()
-        tree2d:insert(Vector2(0,0), 'correct')
-        tree2d:insert(Vector2(1,0), 'incorrect')
-        tree2d:insert(Vector2(0,2), 'correct')
-        tree2d:insert(Vector2(0,3), 'incorrect')
-        tree2d:insert(Vector2(-1,-1), 'correct')
-        tree2d:insert(Vector2(-1,4), 'incorrect')
-        tree2d:insert(Vector2(-3,1), 'correct')
-        tree2d:insert(Vector2(-3,0), 'incorrect')
-        tree2d:insert(Vector2(-2,3), 'incorrect')
+        tree2d:insert(Vector2(0, 0), 'correct')
+        tree2d:insert(Vector2(1, 0), 'incorrect')
+        tree2d:insert(Vector2(0, 2), 'correct')
+        tree2d:insert(Vector2(0, 3), 'incorrect')
+        tree2d:insert(Vector2(-1, -1), 'correct')
+        tree2d:insert(Vector2(-1, 4), 'incorrect')
+        tree2d:insert(Vector2(-3, 1), 'correct')
+        tree2d:insert(Vector2(-3, 0), 'incorrect')
+        tree2d:insert(Vector2(-2, 3), 'incorrect')
 
         local list = tree2d:findInCircle(Vector2(-1, 1), 2)
         assert(#list == 4)
@@ -397,8 +397,75 @@ TESTS = {
         assert(list[4] == 'correct')
     end,
 
-    -- TODO: Tree3D tests
-    -- findInCuboid https://www.geogebra.org/3d/rxjsvjur
+    -- Tree3D tests
+    function()
+        -- Test insert simple
+
+        local tree3d = Tree3D()
+        tree3d:insert(Vector3(2, 5, -1), 'correct')
+
+        assert(tree3d._tree ~= nil)
+        assert(tree3d._tree._rootNode ~= nil)
+        assert(tree3d._tree._rootNode.value == 2)       -- contains x
+
+        local treeYZ = tree3d._tree._rootNode.data
+        assert(treeYZ ~= nil)
+        assert(treeYZ._tree ~= nil)
+        assert(treeYZ._tree._rootNode ~= nil)
+        assert(treeYZ._tree._rootNode.value == 5)       -- contains y
+
+        local treeZ = treeYZ._tree._rootNode.data
+        assert(treeZ ~= nil)
+        assert(treeZ._rootNode ~= nil)
+        assert(treeZ._rootNode.value == -1)       -- contains z
+    end,
+    function()
+        -- Test insert and find
+
+        local tree3d = Tree3D()
+        tree3d:insert(Vector3(2, 5, -1), 'correct')
+
+        assert(tree3d:find(Vector3(2, 5, -1)) == 'correct')
+    end,
+    function()
+        -- Test insert (same X and Y)
+
+        local tree3d = Tree3D()
+        tree3d:insert(Vector3(2, 5, -1), 'correct')
+        tree3d:insert(Vector3(2, 5, 5), 'correct')
+        tree3d:insert(Vector3(2, 6, 2), 'correct')
+
+        assert(tree3d:find(Vector3(2, 5, -1)) == 'correct')
+        assert(tree3d:find(Vector3(2, 5, 5)) == 'correct')
+        assert(tree3d:find(Vector3(2, 6, 2)) == 'correct')
+    end,
+    function()
+        -- Test insert and bad find
+
+        local tree3d = Tree3D()
+        tree3d:insert(Vector3(2, 5, -1), 'correct')
+
+        assert(tree3d:find(Vector3(2, 5, 9)) == nil)
+        assert(tree3d:find(Vector3(2, 6, -1)) == nil)
+        assert(tree3d:find(Vector3(3, 5, -1)) == nil)
+    end,
+    function()
+        -- Test findInCuboid
+        -- https://www.geogebra.org/3d/rxjsvjur
+
+        local tree3d = Tree3D()
+        tree3d:insert(Vector3(1, 4, 8), 'incorrect')
+        tree3d:insert(Vector3(7, 1, 3), 'correct')
+        tree3d:insert(Vector3(1, 0, 2), 'correct')
+        tree3d:insert(Vector3(10, 6, 2), 'incorrect')
+
+        local list = tree3d:findInCuboid(Vector3(-1, -1, 1), Vector3(10, 8, 4))
+        iprint(#list)
+        assert(#list == 2)
+        assert(list[1] == 'correct')
+        assert(list[2] == 'correct')
+    end,
+
     -- findInSphere https://www.geogebra.org/3d/tdzpdhgd
 
 }

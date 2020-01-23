@@ -3,11 +3,11 @@ local function sqr(x)
 end
 
 local Tree3DClass = {
-    _tree2d = nil,
+    _tree = nil,
 
     insert = function(self, vector3, data)
         local basicTree = Tree2D()                            -- insert that shit, if key does not exists
-        basicTree:insert(TreeNode(Vector2(vector3.y, vector3.z), data))
+        basicTree:insert(Vector2(vector3.y, vector3.z), data)
         local basicNode = TreeNode(vector3.x, basicTree)
 
         local node = self._tree:getNodeByValueOrInsert(basicNode)
@@ -15,12 +15,12 @@ local Tree3DClass = {
             return nil                  -- ok, inserted
         end
 
-        local tree = node.data                              -- the same X, insert our data with Y
-        tree:insert(Vector2(vector3.y, vector3.z), data)
+        local tree2d = node.data                              -- the same X, insert our data with Y
+        tree2d:insert(Vector2(vector3.y, vector3.z), data)
     end,
 
-    find = function(self, vector2)
-        local tree2DNode = self._tree:getNodeByValue(vector2.x)
+    find = function(self, vector3)
+        local tree2DNode = self._tree:getNodeByValue(vector3.x)
         if tree2DNode == nil then
             return nil
         end
@@ -37,11 +37,11 @@ local Tree3DClass = {
         for _, node in pairs(nodeList) do
             -- every node has correct X only
 
-            local tree = node.data
+            local tree2d = node.data
 
-            local insideResult = tree:findInRectangle(
-                    Vector2(corner.y, corner.y + depth.y),
-                    Vector2(corner.z, corner.z + depth.z)
+            local insideResult = tree2d:findInRectangle(
+                    Vector2(corner.y, corner.z + depth.z),          --left up
+                    Vector2(corner.y + depth.y, corner.z)           --right down
             )
             for _, data in ipairs(insideResult) do
                 table.insert(result, data)
