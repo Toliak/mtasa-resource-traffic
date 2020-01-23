@@ -1,16 +1,35 @@
 <meta>
     <info type="script" author="Toliak" />
 
+    <!-- Server-side -->
+
     <script type="server" cache="false" src="server/core.lua" />
-
-    <script type="client" cache="false" src="client/core.lua" />
-
     <script type="server" cache="false" src="server/tests.lua" />
+
+    <!-- Client-side -->
+
+    <script type="client" cache="false" src="client/debug.lua" />
+    <script type="client" cache="false" src="client/utils.lua" />
+
+    <!-- Shared-side -->
 
     <script type="client" cache="false" src="shared/tree.lua" />
     <script type="server" cache="false" src="shared/tree.lua" />
+
     <script type="client" cache="false" src="shared/tree2d.lua" />
     <script type="server" cache="false" src="shared/tree2d.lua" />
+
+    <script type="client" cache="false" src="shared/tree3d.lua" />
+    <script type="server" cache="false" src="shared/tree3d.lua" />
+
+    <script type="client" cache="false" src="shared/node.lua" />
+    <script type="server" cache="false" src="shared/node.lua" />
+
+    <script type="client" cache="false" src="shared/path_list.lua" />
+    <script type="server" cache="false" src="shared/path_list.lua" />
+
+    <script type="client" cache="false" src="shared/path.lua" />
+    <script type="server" cache="false" src="shared/path.lua" />
 
     <oop>true</oop>
 </meta>

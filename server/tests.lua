@@ -485,6 +485,26 @@ TESTS = {
         assert(list[3] == 'correct')
     end,
 
+
+    -- PathNode tests
+    function()
+        -- Test constructor
+
+        local pathNode = PathNode(0, 0, 0)
+        assert(pathNode:getPosition().x == 0)
+        assert(pathNode:getPosition().y == 0)
+        assert(pathNode:getPosition().z == 0)
+    end,
+    function()
+        -- Test getPosition, setPosition
+
+        local pathNode = PathNode(0, 0, 0)
+        pathNode:setPosition(3, 2, 1)
+
+        assert(pathNode:getPosition().x == 3)
+        assert(pathNode:getPosition().y == 2)
+        assert(pathNode:getPosition().z == 1)
+    end
 }
 
 addEventHandler('onResourceStart', resourceRoot, function()
