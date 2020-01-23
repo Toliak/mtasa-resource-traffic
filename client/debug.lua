@@ -1,5 +1,5 @@
 -- spawn point
-addCommandHandler('sp', function()
+addCommandHandler('spn', function()
     local position = localPlayer.position
 
     local pathNode = PathNode(position.x, position.y, position.z)
@@ -8,9 +8,9 @@ addCommandHandler('sp', function()
     PATH_TREE:insert(position, pathNode)
 end)
 
-local function pathNodeToString(pathNode)
+function pathNodeToString(pathNode)
     local linksTableString = '{ '
-    for k, v in pairs(pathNode) do
+    for k, v in pairs(pathNode._links) do
         linksTableString = linksTableString .. ('["%s"] = %d, '):format(k, v)
     end
     linksTableString = linksTableString .. '}'
@@ -21,11 +21,11 @@ end
 addCommandHandler('ss', function()
     local string = 'PATH_LIST = {\n'
     for _, pathNode in ipairs(PATH_LIST) do
-        string = string .. '    ' .. pathNodeToString(pathNode) .. '\n'
+        string = string .. '    ' .. pathNodeToString(pathNode) .. ',\n'
     end
     string = string .. '}'
 
-    return string
+    outputConsole(string)
 end)
 
 local RENDER_RADIUS = 10

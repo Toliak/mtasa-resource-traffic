@@ -33,7 +33,7 @@ function PathNode(x, y, z, links)
     })
 
     object:setPosition(x, y, z)
-    object.links = links
+    object._links = links
 
     return object
 end
