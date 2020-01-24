@@ -8,14 +8,26 @@ local function runTests()
 
         if returned == false then
             failedTests = failedTests + 1
-            iprint('failed test ', i)
-            iprint(error)
+            outputDebugString(('failed test %d'):format(i), 1)
+            outputDebugString(error, 2)
         end
 
     end
 
-    iprint(('====[TRAFFIC TESTS %s ]===='):format(IS_CLIENT and 'CLIENT' or 'SERVER'))
-    iprint('Failed ', failedTests, 'from', #TESTS)
+    outputDebugString(
+            ('====[TRAFFIC TESTS %s ]===='):format(IS_CLIENT and 'CLIENT' or 'SERVER'),
+            0,
+            255,
+            255,
+            255
+    )
+    outputDebugString(
+            ('Failed %d from %d'):format(failedTests, #TESTS),
+            0,
+            255,
+            255,
+            255
+    )
 
     for _, object in ipairs(FIXTURES) do
         object:destroy()
