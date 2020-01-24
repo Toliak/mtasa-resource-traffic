@@ -28,7 +28,7 @@ addCommandHandler('ss', function()
     outputConsole(string)
 end)
 
-local RENDER_RADIUS = 30
+local RENDER_RADIUS = 100
 
 addEventHandler('onClientRender', root, function()
     local checkVariables = (function()
