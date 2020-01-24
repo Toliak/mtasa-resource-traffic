@@ -3,6 +3,7 @@
 
     <!-- Server-side -->
 
+    <script type="server" cache="false" src="server/ped_container.lua" />
     <script type="server" cache="false" src="server/core.lua" />
 
     <!-- Client-side -->
@@ -28,6 +29,9 @@
 
     <script type="client" cache="false" src="shared/path_config.lua" />
     <script type="server" cache="false" src="shared/path_config.lua" />
+
+    <script type="client" cache="false" src="shared/global_config.lua" />
+    <script type="server" cache="false" src="shared/global_config.lua" />
 
     <script type="client" cache="false" src="shared/path.lua" />
     <script type="server" cache="false" src="shared/path.lua" />

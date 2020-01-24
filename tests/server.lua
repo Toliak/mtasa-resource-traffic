@@ -48,7 +48,11 @@ local function testTreeRotate()
 end
 
 FIXTURES = {
-
+    Ped(0, 0, 0, 0), -- 1
+    Ped(0, 0, 0, 0), -- 2
+    Ped(0, 0, 0, 0), -- 3
+    Ped(0, 0, 0, 0), -- 4
+    Ped(0, 0, 0, 0), -- 5
 }
 
 TESTS = {
@@ -509,4 +513,65 @@ TESTS = {
         assert(pathNode:getPosition().y == 2)
         assert(pathNode:getPosition().z == 1)
     end,
+
+    -- PedContainer tests
+    function()
+        -- Test append, getLength
+
+        local container = PedContainer()
+
+        container:append(FIXTURES[1], FIXTURES[1])
+        assert(container:getLength() == 1)
+
+        container:append(FIXTURES[1], FIXTURES[2])
+        assert(container:getLength() == 2)
+    end,
+    function()
+        -- Test createPed
+
+        local container = PedContainer()
+
+        container:createPed(FIXTURES[1], 0, PathNode(5, 6, 7))
+        assert(container:getLength() == 1)
+    end,
+    function()
+        -- Test destroy
+
+        local ped = Ped(0, 0, 0, 0)
+        local container = PedContainer()
+
+        container:append(FIXTURES[1], ped)
+        container:destroy(FIXTURES[1], ped)
+
+        assert(container:getLength() == 0)
+        assert(not isElement(ped))
+    end,
+    function()
+        -- Test changePedController
+
+        local container = PedContainer()
+
+        container:append(FIXTURES[1], FIXTURES[1])
+        container:changePedController(
+                FIXTURES[1], -- old controller
+                FIXTURES[1], -- ped
+                FIXTURES[2]  -- new controller
+        )
+        assert(container._table[FIXTURES[1]][FIXTURES[1]] == nil)
+        assert(container._table[FIXTURES[2]][FIXTURES[1]] ~= nil)
+    end,
+    function()
+        -- Test getLength
+
+        local container = PedContainer()
+        assert(container:getLength() == 0)
+        assert(container:getLength('string') == 0)
+
+        container:append(FIXTURES[1], FIXTURES[1])
+        assert(container:getLength() == 1)
+        assert(container:getLength(FIXTURES[1]) == 1)
+        assert(container:getLength('string') == 0)
+    end,
+
+
 }

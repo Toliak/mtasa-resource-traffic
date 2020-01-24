@@ -1,60 +1,83 @@
-SPAWN_RED_RADIUS = 25
-SPAWN_GREEN_RADIUS = 40
-
-MAX_PEDS = 100
-CHECK_TIME = 100
-
-local checkTimeLocal = CHECK_TIME
 local pedContainer = PedContainer()
 
+addEvent('onClientPedRequestAnswer', true)
+addEventHandler('onClientPedRequestAnswer', resourceRoot, function(peds)
+    for _, ped in pairs(peds) do
+        pedContainer:append(ped)
+    end
+end)
+
 local function trigger()
+    -- spawn peds
+    if pedContainer:getLength() < MAX_PEDS then
+        triggerServerEvent('onPedRequest', resourceRoot, MAX_PEDS - pedContainer:getLength())
+    end
+
     -- remove far peds
     local toRemove = pedContainer:removeIfNotInSphere(localPlayer.position, SPAWN_GREEN_RADIUS)
-    -- TODO: send list to server
-    for _, ped in pairs(toRemove) do
-        ped:destroy()
-    end
-
-    -- spawn peds
-    if pedContainer:getLength() >= MAX_PEDS then
-        return
-    end
-
-    local position = localPlayer.position
-    local pathNodes = PATH_TREE:findInSphere(position, SPAWN_GREEN_RADIUS)
-    iprint(#pathNodes)
-    for _, pathNode in pairs(pathNodes) do
-        (function()
-            local distance = (pathNode:getPosition() - position):getLength()
-            if distance <= SPAWN_RED_RADIUS then
-                return
-            end
-
-            --TODO: move to server-side
-            local ped = Ped(303, pathNode:getPosition())
-            pedContainer:append(ped)
-
-            local states = {
-                'forwards',
-                'backwards',
-                'left',
-                'right',
-            }
-            ped:setControlState(states[math.random(1, #states)], true)
-            ped:setControlState('walk', true)
-        end)()
+    if #toRemove > 0 then
+        triggerServerEvent('onPedRelease', resourceRoot, toRemove)
     end
 end
 
-addEventHandler('onClientPreRender', root, function(msec)
-    if checkTimeLocal <= 0 then
-        checkTimeLocal = 0
+-- TODO FIXME govnocode
+-- spawn checker
+(function()
+    local checkTimeLocal = CHECK_TIME_SPAWN
 
-        -- lets do it
-        trigger()
+    addEventHandler('onClientPreRender', root, function(msec)
+        if checkTimeLocal == nil then
+            checkTimeLocal = CHECK_TIME_SPAWN
+            return
+        end
 
-        return
-    end
+        if checkTimeLocal <= 0 then
+            checkTimeLocal = CHECK_TIME_SPAWN
 
-    checkTimeLocal = checkTimeLocal - msec
-end)
+            -- lets do it
+            trigger()
+
+            return
+        end
+
+        checkTimeLocal = checkTimeLocal - msec
+    end)
+end)();
+
+-- state checker
+(function()
+    local checkTimeLocal = CHECK_TIME_PED_STATE
+
+    addEventHandler('onClientPreRender', root, function(msec)
+        if checkTimeLocal == nil then
+            checkTimeLocal = CHECK_TIME_PED_STATE
+            return
+        end
+
+        if checkTimeLocal <= 0 then
+            checkTimeLocal = CHECK_TIME_PED_STATE
+
+            -- lets do it
+            local pedList = pedContainer:toList()
+            for _, ped in pairs(pedList) do
+                local states = {
+                    'forwards',
+                    'backwards',
+                    'left',
+                    'right',
+                }
+                for _, state in pairs(states) do
+                    ped:setControlState(state, false)
+                end
+
+                ped:setControlState(states[math.random(1, #states)], true)
+                ped:setControlState('walk', true)
+            end
+            --end
+
+            return
+        end
+
+        checkTimeLocal = checkTimeLocal - msec
+    end)
+end)();

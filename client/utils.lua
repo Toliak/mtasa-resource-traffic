@@ -14,3 +14,4 @@ function dxDrawTextOnPosition(position,text,height,distance,R,G,B,alpha,size,fon
 		end
 	end
 end
+

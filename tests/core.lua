@@ -30,7 +30,9 @@ local function runTests()
     )
 
     for _, object in ipairs(FIXTURES) do
-        object:destroy()
+        if isElement(object) then
+            object:destroy()
+        end
     end
 end
 

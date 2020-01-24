@@ -29,6 +29,15 @@ local PedContainerClass = {
         assert(getElementType(object) == 'ped', 'PedList.append expected Ped at argument 2')
 
         self._table[object] = true
+    end,
+
+    toList = function(self)
+        local result = {}
+        for ped, _ in pairs(self._table) do
+            table.insert(result, ped)
+        end
+
+        return result
     end
 }
 
