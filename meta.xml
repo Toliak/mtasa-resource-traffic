@@ -24,8 +24,8 @@
     <script type="client" cache="false" src="shared/node.lua" />
     <script type="server" cache="false" src="shared/node.lua" />
 
-    <script type="client" cache="false" src="shared/path_list.lua" />
-    <script type="server" cache="false" src="shared/path_list.lua" />
+    <script type="client" cache="false" src="shared/path_config.lua" />
+    <script type="server" cache="false" src="shared/path_config.lua" />
 
     <script type="client" cache="false" src="shared/path.lua" />
     <script type="server" cache="false" src="shared/path.lua" />
