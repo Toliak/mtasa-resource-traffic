@@ -47,7 +47,11 @@ local function testTreeRotate()
     return rootNode
 end
 
-SERVER_TESTS = {
+FIXTURES = {
+
+}
+
+TESTS = {
     -- TreeNode tests
     function()
         -- checks rootNode value
@@ -504,5 +508,5 @@ SERVER_TESTS = {
         assert(pathNode:getPosition().x == 3)
         assert(pathNode:getPosition().y == 2)
         assert(pathNode:getPosition().z == 1)
-    end
+    end,
 }

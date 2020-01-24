@@ -28,22 +28,39 @@ addCommandHandler('ss', function()
     outputConsole(string)
 end)
 
-local RENDER_RADIUS = 10
+local RENDER_RADIUS = 30
 
 addEventHandler('onClientRender', root, function()
+    local checkVariables = (function()
+        return SPAWN_RED_RADIUS ~= nil
+                and SPAWN_GREEN_RADIUS ~= nil
+    end)()
+    assert(checkVariables, 'checkVariables fail')
+
     local position = localPlayer.position
 
     local pathNodes = PATH_TREE:findInSphere(position, RENDER_RADIUS)
     for _, pathNode in pairs(pathNodes) do
+        local distance = (pathNode:getPosition() - position):getLength()
+
+        local color
+        if SPAWN_RED_RADIUS >= distance then
+            color = 0xFFB74649
+        elseif SPAWN_RED_RADIUS < distance and distance <= SPAWN_GREEN_RADIUS then
+            color = 0xFF539D3C
+        else
+            color = 0xFFD9D9D9
+        end
+
         dxDrawLine3D(
                 pathNode.x,
                 pathNode.y,
-                pathNode.z + 0.5,       -- startZ
+                pathNode.z + 0.5, -- startZ
                 pathNode.x,
                 pathNode.y,
-                pathNode.z - 2,         -- endZ
-                0xFF0000AA,             -- color
-                4                       -- width
+                pathNode.z - 2, -- endZ
+                color,
+                4                        -- width
         )
     end
 
