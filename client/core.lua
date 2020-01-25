@@ -1,4 +1,4 @@
-local pedContainer = PedContainer()
+pedContainer = PedContainer()
 
 addEvent('onClientPedRequestAnswer', true)
 addEventHandler('onClientPedRequestAnswer', resourceRoot, function(peds)
@@ -7,13 +7,25 @@ addEventHandler('onClientPedRequestAnswer', resourceRoot, function(peds)
     end
 end)
 
+addEvent('onClientPedKey', true)
+addEventHandler('onClientPedKey', resourceRoot, function(...)
+    setPedControlState(...)
+end)
+
+local function setPedControlStateShared(...)
+    setPedControlState(...)
+    triggerServerEvent('onPedSetControlState', resourceRoot, ...)
+end
+
 local function trigger()
     -- spawn peds
     if pedContainer:getLength() < MAX_PEDS then
-        triggerServerEvent('onPedRequest', resourceRoot, MAX_PEDS - pedContainer:getLength())
+        triggerServerEvent('onPedRequest', resourceRoot, MAX_PEDS_PER_SPAWN)
     end
+end
 
-    -- remove far peds
+local function triggerRelease()
+    -- release far peds
     local toRemove = pedContainer:removeIfNotInSphere(localPlayer.position, SPAWN_GREEN_RADIUS)
     if #toRemove > 0 then
         triggerServerEvent('onPedRelease', resourceRoot, toRemove)
@@ -36,6 +48,29 @@ end
 
             -- lets do it
             trigger()
+
+            return
+        end
+
+        checkTimeLocal = checkTimeLocal - msec
+    end)
+end)();
+
+-- release checker
+(function()
+    local checkTimeLocal = CHECK_TIME_RELEASE
+
+    addEventHandler('onClientPreRender', root, function(msec)
+        if checkTimeLocal == nil then
+            checkTimeLocal = CHECK_TIME_RELEASE
+            return
+        end
+
+        if checkTimeLocal <= 0 then
+            checkTimeLocal = CHECK_TIME_RELEASE
+
+            -- lets do it
+            triggerRelease()
 
             return
         end
@@ -67,11 +102,11 @@ end)();
                     'right',
                 }
                 for _, state in pairs(states) do
-                    ped:setControlState(state, false)
+                    setPedControlStateShared(ped, state, false)
                 end
 
-                ped:setControlState(states[math.random(1, #states)], true)
-                ped:setControlState('walk', true)
+                setPedControlStateShared(ped, states[math.random(1, #states)], true)
+                setPedControlStateShared(ped, 'walk', true)
             end
             --end
 

@@ -52,15 +52,34 @@ addEvent('onPedRelease', true)
 addEventHandler('onPedRelease', resourceRoot, function(pedList_)
     local task = coroutine.create(function(player, pedList)
         for _, ped in pairs(pedList) do
-
             local newController = getPedStreamablePlayer(ped, SPAWN_RED_RADIUS, player)
             if newController == nil then
                 pedContainer:destroy(player, ped)
             else
                 pedContainer:changePedController(player, ped, newController)
+                triggerClientEvent(newController, 'onClientPedRequestAnswer', resourceRoot, {ped})
             end
 
         end
     end)
     coroutine.resume(task, client, pedList_)
+end)
+
+addEvent('onPedSetControlState', true)
+addEventHandler('onPedSetControlState', resourceRoot, function(ped_, control_, state_)
+    local task = coroutine.create(function(exclude, ped, control, state)
+        local players = Element.getAllByType('player')
+        local clientList = {}
+
+        for _, player in pairs(players) do
+            local distance = (player.position - ped.position):getLength()
+
+            if exclude ~= player and distance <= SPAWN_GREEN_RADIUS then
+                table.insert(clientList, player)
+            end
+        end
+
+        triggerClientEvent(clientList, 'onClientPedKey', resourceRoot, ped, control, state)
+    end)
+    coroutine.resume(task, client, ped_, control_, state_)
 end)

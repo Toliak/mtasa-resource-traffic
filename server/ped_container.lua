@@ -36,7 +36,7 @@ local PedContainerClass = {
         if self._table[controller] == nil then
             self._table[controller] = {}
         end
-        self._table[controller][ped] = ped
+        self._table[controller][ped] = true
     end,
 
     createPed = function(self, controller, pedSkin, pathNode)
@@ -53,9 +53,10 @@ local PedContainerClass = {
         assert(isElement(controller), 'PedList.destroy expected Player at argument 2')
         assert(isElement(ped), 'PedList.destroy expected Ped at argument 3')
         assert(getElementType(ped) == 'ped', 'PedList.append expected Ped at argument 3')
-
-        assert(self._table[controller] ~= nil, 'No controller')
-        assert(self._table[controller][ped] ~= nil, 'No ped')
+        
+        if self._table[controller] == nil or self._table[controller][ped] == nil then
+            return
+        end
 
         self._table[controller][ped] = nil
         ped:destroy()

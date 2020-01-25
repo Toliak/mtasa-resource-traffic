@@ -63,5 +63,22 @@ addEventHandler('onClientRender', root, function()
                 4                        -- width
         )
     end
+end)
 
+addEventHandler('onClientRender', root, function()
+    local HEIGTH = 0.3
+    local Z_OFFSET = 1.5
+    for ped, _ in pairs(pedContainer._table) do 
+        local position = ped.position
+        dxDrawLine3D(
+            position.x,
+            position.y,
+            position.z + Z_OFFSET, -- startZ
+            position.x,
+            position.y,
+            position.z + Z_OFFSET + HEIGTH, -- endZ
+                0xFFFFFFFF,
+                8                        -- width
+        )
+    end
 end)
