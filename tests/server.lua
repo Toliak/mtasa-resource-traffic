@@ -573,5 +573,44 @@ TESTS = {
         assert(container:getLength('string') == 0)
     end,
 
+    -- PlayerCollision test
+    function()
+        -- Test createCollision, getCollision
 
+        local playerCollision = PlayerCollision(ColShape.Sphere, { 15 })
+
+        local collision1 = playerCollision:createCollision(FIXTURES[1])
+        local collision2 = playerCollision:getCollision(FIXTURES[1])
+
+        assert(collision1 == collision2)
+    end,
+    function()
+        -- Test getCollision (if does not exists)
+
+        local playerCollision = PlayerCollision(ColShape.Sphere, { 15 })
+
+        assert(playerCollision:getCollision(FIXTURES[1]) == nil)
+    end,
+    function()
+        -- Test getOrCreateCollision (if does not exists)
+
+        local playerCollision = PlayerCollision(ColShape.Sphere, { 15 })
+
+        local collision1 = playerCollision:getOrCreateCollision(FIXTURES[1])
+        local collision2 = playerCollision:getOrCreateCollision(FIXTURES[1])
+
+        assert(collision1 == collision2)
+    end,
+    function()
+        -- Test destroyCollision
+
+        local playerCollision = PlayerCollision(ColShape.Sphere, { 15 })
+
+        playerCollision:createCollision(FIXTURES[1])
+        playerCollision:destroyCollision(FIXTURES[1])
+
+        local collision2 = playerCollision:getCollision(FIXTURES[1])
+
+        assert(collision2 == nil)
+    end
 }

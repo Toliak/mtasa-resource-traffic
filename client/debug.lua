@@ -66,7 +66,7 @@ addEventHandler('onClientRender', root, function()
 end)
 
 addEventHandler('onClientRender', root, function()
-    local HEIGTH = 0.3
+    local HEIGHT = 0.3
     local Z_OFFSET = 1.5
     for ped, _ in pairs(pedContainer._table) do 
         local position = ped.position
@@ -76,7 +76,7 @@ addEventHandler('onClientRender', root, function()
             position.z + Z_OFFSET, -- startZ
             position.x,
             position.y,
-            position.z + Z_OFFSET + HEIGTH, -- endZ
+            position.z + Z_OFFSET + HEIGHT, -- endZ
                 0xFFFFFFFF,
                 8                        -- width
         )

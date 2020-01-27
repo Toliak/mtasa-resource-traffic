@@ -4,6 +4,7 @@
     <!-- Server-side -->
 
     <script type="server" cache="false" src="server/ped_container.lua" />
+    <script type="server" cache="false" src="server/player_collision.lua" />
     <script type="server" cache="false" src="server/core.lua" />
 
     <!-- Client-side -->
