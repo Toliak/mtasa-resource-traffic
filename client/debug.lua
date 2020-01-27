@@ -69,20 +69,47 @@ addEventHandler('onClientRender', root, function()
     end
 end)
 
+-- request all debug info about peds from server
+
+local DEBUG_SYNC_TIME = 250
+
+local function requestInformationFromServer()
+    local peds = viewCollision:getElementsWithin('ped')
+    triggerServerEvent('onPlayerDebugRequest', resourceRoot, peds)
+end
+
+setTimer(requestInformationFromServer, DEBUG_SYNC_TIME, 0)
+
+local pedDebugInfo = {}
+
+addEvent('onClientDebugRequest', true)
+addEventHandler('onClientDebugRequest', resourceRoot, function(info)
+    pedDebugInfo = info
+end)
+
+
 addEventHandler('onClientRender', root, function()
-    local HEIGHT = 0.3
-    local Z_OFFSET = 1.5
-    for ped, _ in pairs(pedContainer._table) do 
+    local Z_OFFSET = 0.7
+
+    local peds = viewCollision:getElementsWithin('ped')
+    for _, ped in pairs(peds) do 
+        local message = 'No info'
+
+        local data = pedDebugInfo[ped]
+        if data ~= nil then
+            message = ''
+            for key, value in pairs(data) do
+                message = message .. ('#FFFFFF%s: %s\n'):format(key, value)
+            end
+        end
+
         local position = ped.position
-        dxDrawLine3D(
+        dxDrawTextOnPosition(
             position.x,
             position.y,
-            position.z + Z_OFFSET, -- startZ
-            position.x,
-            position.y,
-            position.z + Z_OFFSET + HEIGHT, -- endZ
-                0xFFFFFFFF,
-                8                        -- width
+            position.z + Z_OFFSET, -- startZ,
+            message,
+            0
         )
     end
 end)

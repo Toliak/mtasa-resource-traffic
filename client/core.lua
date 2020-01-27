@@ -1,4 +1,9 @@
 pedContainer = PedContainer()
+viewCollision = ColShape.Sphere(0,0,0,SPAWN_RED_RADIUS)
+
+addEventHandler('onClientResourceStart', resourceRoot, function()
+    viewCollision:attach(localPlayer)
+end)
 
 addEvent('onClientPedRequestAnswer', true)
 addEventHandler('onClientPedRequestAnswer', resourceRoot, function(peds)
@@ -8,13 +13,18 @@ addEventHandler('onClientPedRequestAnswer', resourceRoot, function(peds)
 end)
 
 addEvent('onClientPedKey', true)
-addEventHandler('onClientPedKey', resourceRoot, function(...)
-    setPedControlState(...)
+addEventHandler('onClientPedKey', resourceRoot, function(ped, stateTable)
+    for control, state in pairs(stateTable) do
+        setPedControlState(ped, control, state)
+    end
 end)
 
-local function setPedControlStateShared(...)
-    setPedControlState(...)
-    triggerServerEvent('onPedSetControlState', resourceRoot, ...)
+-- @param table control-state
+local function setPedControlStateShared(ped, stateTable)
+    for control, state in pairs(stateTable) do
+        setPedControlState(ped, control, state)
+    end
+    triggerServerEvent('onPedSetControlState', resourceRoot, ped, stateTable)
 end
 
 local function trigger()
@@ -96,17 +106,22 @@ end)();
             local pedList = pedContainer:toList()
             for _, ped in pairs(pedList) do
                 local states = {
+                    forwards = false,
+                    backwards = false,
+                    left = false,
+                    right = false,
+                }
+                local keys= {
                     'forwards',
                     'backwards',
                     'left',
                     'right',
                 }
-                for _, state in pairs(states) do
-                    setPedControlStateShared(ped, state, false)
-                end
 
-                setPedControlStateShared(ped, states[math.random(1, #states)], true)
-                setPedControlStateShared(ped, 'walk', true)
+                states[keys[math.random(1, #keys)]] = true
+                states['walk'] = true
+
+                setPedControlStateShared(ped, states)
             end
             --end
 

@@ -37,6 +37,8 @@ local PedContainerClass = {
             self._table[controller] = {}
         end
         self._table[controller][ped] = true
+
+        ped:setSyncer(controller)
     end,
 
     createPed = function(self, controller, pedSkin, pathNode)

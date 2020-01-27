@@ -1,5 +1,5 @@
-local pedContainer = PedContainer()
-local playerCollision = PlayerCollision(ColShape.Sphere, {SPAWN_RED_RADIUS})
+pedContainer = PedContainer()
+playerCollision = PlayerCollision(ColShape.Sphere, {SPAWN_RED_RADIUS})
 
 local function pedFactory(controller, amount)
     local SKINS = { 22, 23, 24, 25, 26, 27, 28, 29, 30, 32, 33, 34, 35, 36, 37, 43, 44,
@@ -20,9 +20,21 @@ local function pedFactory(controller, amount)
     local pathNodes = PATH_TREE:findInSphere(controller.position, SPAWN_GREEN_RADIUS)
     local pathNodesGreen = {}                         -- filtered path nodes
     for _, pathNode in pairs(pathNodes) do
-        local distance = (pathNode:getPosition() - controller.position):getLength()
-        if distance > SPAWN_RED_RADIUS then
-            table.insert(pathNodesGreen, pathNode)
+        -- we can't spawn peds in red zone of any player
+        local playerBlocked = false
+        local players = Element.getAllByType('player')
+        for _, player in pairs(players) do
+            local distance = (pathNode:getPosition() - player.position):getLength()
+            if distance <= SPAWN_RED_RADIUS then
+                playerBlocked = true
+            end
+        end
+
+        if not playerBlocked then
+            local distance = (pathNode:getPosition() - controller.position):getLength()
+            if distance > SPAWN_RED_RADIUS then
+                table.insert(pathNodesGreen, pathNode)
+            end
         end
     end
 
@@ -72,8 +84,8 @@ addEventHandler('onPedRelease', resourceRoot, function(pedList_)
 end)
 
 addEvent('onPedSetControlState', true)
-addEventHandler('onPedSetControlState', resourceRoot, function(ped_, control_, state_)
-    local task = coroutine.create(function(exclude, ped, control, state)
+addEventHandler('onPedSetControlState', resourceRoot, function(ped_, stateTable_)
+    local task = coroutine.create(function(exclude, ped, stateTable)
         local players = Element.getAllByType('player')
         local clientList = {}
 
@@ -85,7 +97,7 @@ addEventHandler('onPedSetControlState', resourceRoot, function(ped_, control_, s
             end
         end
 
-        triggerClientEvent(clientList, 'onClientPedKey', resourceRoot, ped, control, state)
+        triggerClientEvent(clientList, 'onClientPedKey', resourceRoot, ped, stateTable)
     end)
-    coroutine.resume(task, client, ped_, control_, state_)
+    coroutine.resume(task, client, ped_, stateTable_)
 end)
