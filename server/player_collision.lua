@@ -7,7 +7,12 @@ local PlayerCollisionClass = {
         assert(self._table[player] == nil, 'Collision for player already exists')
 
         local position = player.position
-        local collision = self._collision_constructor(position, unpack(self._collision_constructor_args))
+        local collision = self._collision_constructor(
+            position.x,
+            position.y,
+            position.z,
+            unpack(self._collision_constructor_args)
+        )
         collision:attach(player)
 
         self._table[player] = collision

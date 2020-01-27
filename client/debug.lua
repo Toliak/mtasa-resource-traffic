@@ -8,6 +8,10 @@ addCommandHandler('spn', function()
     PATH_TREE:insert(position, pathNode)
 end)
 
+addCommandHandler('dbgmd', function()
+    setDevelopmentMode(true, true)
+end)
+
 function pathNodeToString(pathNode)
     local linksTableString = '{ '
     for k, v in pairs(pathNode._links) do

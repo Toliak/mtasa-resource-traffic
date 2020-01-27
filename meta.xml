@@ -1,6 +1,11 @@
 <meta>
     <info type="script" author="Toliak" />
 
+    <!-- Config -->
+    
+    <script type="client" cache="false" src="shared/global_config.lua" />
+    <script type="server" cache="false" src="shared/global_config.lua" />
+
     <!-- Server-side -->
 
     <script type="server" cache="false" src="server/ped_container.lua" />
@@ -30,9 +35,6 @@
 
     <script type="client" cache="false" src="shared/path_config.lua" />
     <script type="server" cache="false" src="shared/path_config.lua" />
-
-    <script type="client" cache="false" src="shared/global_config.lua" />
-    <script type="server" cache="false" src="shared/global_config.lua" />
 
     <script type="client" cache="false" src="shared/path.lua" />
     <script type="server" cache="false" src="shared/path.lua" />
