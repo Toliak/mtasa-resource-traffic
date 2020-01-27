@@ -1,4 +1,5 @@
 local pedContainer = PedContainer()
+local playerCollision = PlayerCollision(ColShape.Sphere, {SPAWN_RED_RADIUS})
 
 local function pedFactory(controller, amount)
     local SKINS = { 22, 23, 24, 25, 26, 27, 28, 29, 30, 32, 33, 34, 35, 36, 37, 43, 44,
@@ -9,6 +10,11 @@ local function pedFactory(controller, amount)
 
     local available = MAX_PEDS - pedContainer:getLength(controller)
     available = math.min(available, amount)
+
+    local collision = playerCollision:getOrCreateCollision(controller)
+    local inCollision = #collision:getElementsWithin('ped')
+
+    available = math.min(available, math.max(0, available - inCollision))
 
     -- get and filter path nodes
     local pathNodes = PATH_TREE:findInSphere(controller.position, SPAWN_GREEN_RADIUS)

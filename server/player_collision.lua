@@ -8,6 +8,7 @@ local PlayerCollisionClass = {
 
         local position = player.position
         local collision = self._collision_constructor(position, unpack(self._collision_constructor_args))
+        collision:attach(player)
 
         self._table[player] = collision
         return collision
@@ -29,6 +30,7 @@ local PlayerCollisionClass = {
     destroyCollision = function(self, player)
         assert(self._table[player] ~= nil, 'Collision for player does not exists')
 
+        self._table[player]:detach(player)
         self._table[player]:destroy()
         self._table[player] = nil
     end,
