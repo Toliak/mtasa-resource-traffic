@@ -14,7 +14,7 @@ local function pedFactory(controller, amount)
     local collision = playerCollision:getOrCreateCollision(controller)
     local inCollision = #collision:getElementsWithin('ped')
 
-    available = math.min(available, math.max(0, available - inCollision))
+    available = math.min(available,  MAX_PEDS - inCollision)
 
     -- get and filter path nodes
     local pathNodes = PATH_TREE:findInSphere(controller.position, SPAWN_GREEN_RADIUS)
