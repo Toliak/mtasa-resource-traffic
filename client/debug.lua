@@ -168,3 +168,8 @@ addEventHandler('onClientRender', root, function()
         )
     end
 end)
+
+-- Lines of sight
+addEventHandler('onClientRender', root, function()
+
+end)

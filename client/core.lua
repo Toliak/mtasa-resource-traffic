@@ -34,7 +34,8 @@ function updatePedRotation(ped, node)
     local angle = getAngleBetweenPoints(ped:getPosition(), node:getPosition())
     local rotation = math.deg(angle) - 90
 
-    ped:setRotation(Vector3(0, 0, rotation))
+    --ped:setRotation(Vector3(0, 0, rotation))
+    pedContainer:setData(ped, 'rotateTo', rotation)
     --ped:setCameraRotation(rotation)
     --ped:setLookAt(node:getPosition())
     --ped:setAimTarget(node:getPosition())
@@ -65,9 +66,6 @@ function checkPedKeys()
             direction = newDirection
         end
 
-        -- check distance to node
-
-
         updatePedRotation(ped, nextNode)
 
         local states = {
@@ -88,9 +86,29 @@ function checkPedKeys()
 end
 setTimer(checkPedKeys, CHECK_TIME_PED_KEYS, 0)
 
+function checkPedRotation(msec)
+    local pedList = pedContainer:toList()
+    for _, ped in pairs(pedList) do
+        if ped:isOnGround() then
+            local rotateTo = pedContainer:getData(ped, 'rotateTo')
+            if rotateTo ~= nil and compareWithPrecision(ped:getRotation().z, rotateTo, 8) then
+                pedContainer:setData(ped, 'rotateTo', nil)
+                ped:setRotation(Vector3(0, 0, rotateTo))
+            elseif rotateTo ~= nil then
+
+                local rotation = ped.rotation.z
+
+                ped:setRotation(Vector3(0, 0, rotation + PED_ROTATION_SPEED * msec / 1000))
+            end
+        end
+    end
+end
+addEventHandler('onClientPreRender', root, checkPedRotation)
+
 function checkPedState()
     local pedList = pedContainer:toList()
     for _, ped in pairs(pedList) do
+
         local direction = pedContainer:getData(ped, 'direction')
         local nextNodeId = pedContainer:getData(ped, 'nextNodeId')
         local nextNode = PATH_LIST[nextNodeId]
