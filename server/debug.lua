@@ -25,8 +25,7 @@ local function collectInfoAboutPed(ped, client)
     }
 end
 
-addEvent('onPlayerDebugRequest', true)
-addEventHandler('onPlayerDebugRequest', resourceRoot, function(pedList)
+addSharedEventHandler('onPlayerDebugRequest', resourceRoot, function(pedList)
     local debugInfoDict = {}
 
     for _, ped in pairs(pedList) do

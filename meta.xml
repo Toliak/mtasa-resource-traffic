@@ -1,26 +1,10 @@
 <meta>
     <info type="script" author="Toliak" />
 
-    <!-- Config -->
-    
+    <!-- Shared-side -->
+
     <script type="client" cache="false" src="shared/global_config.lua" />
     <script type="server" cache="false" src="shared/global_config.lua" />
-
-    <!-- Server-side -->
-
-    <script type="server" cache="false" src="server/debug.lua" />
-    <script type="server" cache="false" src="server/ped_container.lua" />
-    <script type="server" cache="false" src="server/player_collision.lua" />
-    <script type="server" cache="false" src="server/core.lua" />
-
-    <!-- Client-side -->
-
-    <script type="client" cache="false" src="client/debug.lua" />
-    <script type="client" cache="false" src="client/ped_container.lua" />
-    <script type="client" cache="false" src="client/utils.lua" />
-    <script type="client" cache="false" src="client/core.lua" />
-
-    <!-- Shared-side -->
 
     <script type="client" cache="false" src="shared/tree.lua" />
     <script type="server" cache="false" src="shared/tree.lua" />
@@ -39,6 +23,25 @@
 
     <script type="client" cache="false" src="shared/path.lua" />
     <script type="server" cache="false" src="shared/path.lua" />
+
+    <script type="client" cache="false" src="shared/utils.lua" />
+    <script type="server" cache="false" src="shared/utils.lua" />
+
+    <!-- Server-side -->
+
+    <script type="server" cache="false" src="server/debug.lua" />
+    <script type="server" cache="false" src="server/ped_container.lua" />
+    <script type="server" cache="false" src="server/player_collision.lua" />
+    <script type="server" cache="false" src="server/core.lua" />
+
+    <!-- Client-side -->
+
+    <script type="client" cache="false" src="client/debug.lua" />
+    <script type="client" cache="false" src="client/ped_container.lua" />
+    <script type="client" cache="false" src="client/utils.lua" />
+    <script type="client" cache="false" src="client/core.lua" />
+
+
 
     <!-- Tests -->
 

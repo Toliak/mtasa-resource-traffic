@@ -585,6 +585,20 @@ TESTS = {
         container:destroy(FIXTURES[1], ped)
         assert(container._data[ped] == nil)
     end,
+    function()
+        -- Test getAllData
+
+        local container = PedContainer()
+
+        container:append(FIXTURES[1], FIXTURES[1])
+        container:setData(FIXTURES[1], 'key', 'value')
+        container:setData(FIXTURES[1], 'key2', 'value2')
+
+        local allData = container:getAllData(FIXTURES[1])
+
+        assert(allData['key'] == 'value')
+        assert(allData['key2'] == 'value2')
+    end,
 
     -- PlayerCollision test
     function()

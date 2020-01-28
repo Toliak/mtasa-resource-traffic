@@ -38,6 +38,10 @@ local PedContainerClass = {
         end
 
         return result
+    end,
+
+    toDict = function(self)
+        local result = {}
     end
 }
 

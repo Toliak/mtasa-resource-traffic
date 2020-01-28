@@ -5,15 +5,14 @@ addEventHandler('onClientResourceStart', resourceRoot, function()
     viewCollision:attach(localPlayer)
 end)
 
-addEvent('onClientPedRequestAnswer', true)
-addEventHandler('onClientPedRequestAnswer', resourceRoot, function(peds)
-    for _, ped in pairs(peds) do
+addSharedEventHandler('onClientPedRequestAnswer', resourceRoot, function(pedDict)
+    for ped, data in pairs(pedDict) do
         pedContainer:append(ped)
+        -- TODO: data
     end
 end)
 
-addEvent('onClientPedKey', true)
-addEventHandler('onClientPedKey', resourceRoot, function(ped, stateTable)
+addSharedEventHandler('onClientPedKey', resourceRoot, function(ped, stateTable)
     for control, state in pairs(stateTable) do
         setPedControlState(ped, control, state)
     end

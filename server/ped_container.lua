@@ -79,6 +79,13 @@ local PedContainerClass = {
         return self._data[ped][key]
     end,
 
+    getAllData = function(self, ped)
+        assert(isElement(ped), 'PedList.getData expected Ped at argument 2')
+        assert(getElementType(ped) == 'ped', 'PedList.getData expected Ped at argument 2')
+
+        return self._data[ped]
+    end,
+
     setData = function(self, ped, key, value)
         assert(isElement(ped), 'PedList.setData expected Ped at argument 2')
         assert(getElementType(ped) == 'ped', 'PedList.setData expected Ped at argument 2')

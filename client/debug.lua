@@ -82,8 +82,7 @@ setTimer(requestInformationFromServer, DEBUG_SYNC_TIME, 0)
 
 local pedDebugInfo = {}
 
-addEvent('onClientDebugRequest', true)
-addEventHandler('onClientDebugRequest', resourceRoot, function(info)
+addSharedEventHandler('onClientDebugRequest', resourceRoot, function(info)
     pedDebugInfo = info
 end)
 
