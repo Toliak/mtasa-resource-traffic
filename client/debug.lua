@@ -12,10 +12,26 @@ addCommandHandler('dbgmd', function()
     setDevelopmentMode(true, true)
 end)
 
+function listToString(list)
+    local result = '{'
+    for _, value in ipairs(list) do
+        result = result .. value .. ', '
+    end
+
+    return result .. '}'
+end
+
 function pathNodeToString(pathNode)
     local linksTableString = '{ '
     for k, v in pairs(pathNode._links) do
-        linksTableString = linksTableString .. ('["%s"] = %d, '):format(k, v)
+        local valueStr = ''
+        if type(v) == 'table' then
+            valueStr = listToString(v)
+        else
+            valueStr = v
+        end
+
+        linksTableString = linksTableString .. ('["%s"] = %s, '):format(k, valueStr)
     end
     linksTableString = linksTableString .. '}'
 
@@ -66,6 +82,41 @@ addEventHandler('onClientRender', root, function()
                 color,
                 4                        -- width
         )
+
+        local forwardLinks = pathNode:getLink('forward')
+        if forwardLinks ~= nil then
+            for _, id in pairs(forwardLinks) do
+                local endNode = PATH_LIST[id]
+
+                dxDrawLine3D(
+                        pathNode.x,
+                        pathNode.y,
+                        pathNode.z, -- startZ
+                        endNode.x,
+                        endNode.y,
+                        endNode.z, -- endZ
+                        0xFF343C76, -- color
+                        2                        -- width
+                )
+            end
+        end
+        local backwardLinks = pathNode:getLink('backward')
+        if backwardLinks ~= nil then
+            for _, id in pairs(backwardLinks) do
+                local endNode = PATH_LIST[id]
+
+                dxDrawLine3D(
+                        pathNode.x,
+                        pathNode.y,
+                        pathNode.z - 0.1, -- startZ
+                        endNode.x,
+                        endNode.y,
+                        endNode.z - 0.1, -- endZ
+                        0xFF4F2F74, -- color
+                        2                        -- width
+                )
+            end
+        end
     end
 end)
 
@@ -86,12 +137,11 @@ addSharedEventHandler('onClientDebugRequest', resourceRoot, function(info)
     pedDebugInfo = info
 end)
 
-
 addEventHandler('onClientRender', root, function()
     local Z_OFFSET = 0.7
 
     local peds = viewCollision:getElementsWithin('ped')
-    for _, ped in pairs(peds) do 
+    for _, ped in pairs(peds) do
         local message = 'No info'
 
         local data = pedDebugInfo[ped]
@@ -104,11 +154,11 @@ addEventHandler('onClientRender', root, function()
 
         local position = ped.position
         dxDrawTextOnPosition(
-            position.x,
-            position.y,
-            position.z + Z_OFFSET, -- startZ,
-            message,
-            0
+                position.x,
+                position.y,
+                position.z + Z_OFFSET, -- startZ,
+                message,
+                0
         )
     end
 end)
