@@ -572,6 +572,19 @@ TESTS = {
         assert(container:getLength(FIXTURES[1]) == 1)
         assert(container:getLength('string') == 0)
     end,
+    function()
+        -- Test setData, getData
+
+        local ped = Ped(0, 0, 0, 0)
+        local container = PedContainer()
+
+        container:append(FIXTURES[1], ped)
+        container:setData(ped, 'key', 'value')
+        assert(container:getData(ped, 'key') == 'value')
+
+        container:destroy(FIXTURES[1], ped)
+        assert(container._data[ped] == nil)
+    end,
 
     -- PlayerCollision test
     function()

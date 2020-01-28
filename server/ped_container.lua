@@ -1,5 +1,6 @@
 local PedDataClass = {
-    controller = nil
+    controller = nil,
+
 }
 
 function PedData()
@@ -10,6 +11,7 @@ end
 
 local PedContainerClass = {
     _table = nil, -- acts like HashMap<Player (controller), HashSet (peds)>
+    _data = nil,
 
     getLength = function(self, controller)
         local length = 0
@@ -38,14 +40,19 @@ local PedContainerClass = {
         end
         self._table[controller][ped] = true
 
-        ped:setSyncer(controller)
+        if self._data[ped] == nil then
+            self._data[ped] = PedData()
+        end
+
+        if controller:getType() == 'player' then
+            ped:setSyncer(controller)
+        end
     end,
 
     createPed = function(self, controller, pedSkin, pathNode)
         assert(isElement(controller), 'PedList.createPed expected Player at argument 2')
 
         local ped = Ped(pedSkin, pathNode:getPosition())
-        data = data or PedData()
 
         self:append(controller, ped)
         return ped
@@ -55,12 +62,14 @@ local PedContainerClass = {
         assert(isElement(controller), 'PedList.destroy expected Player at argument 2')
         assert(isElement(ped), 'PedList.destroy expected Ped at argument 3')
         assert(getElementType(ped) == 'ped', 'PedList.append expected Ped at argument 3')
-        
+
         if self._table[controller] == nil or self._table[controller][ped] == nil then
             return
         end
 
         self._table[controller][ped] = nil
+        self._data[ped] = nil
+
         ped:destroy()
     end,
 
@@ -72,7 +81,21 @@ local PedContainerClass = {
 
         self._table[oldController][ped] = nil
         self:append(newController, ped)
-    end
+    end,
+
+    getData = function(self, ped, key)
+        assert(isElement(ped), 'PedList.getData expected Ped at argument 2')
+        assert(getElementType(ped) == 'ped', 'PedList.getData expected Ped at argument 2')
+
+        return self._data[ped][key]
+    end,
+
+    setData = function(self, ped, key, value)
+        assert(isElement(ped), 'PedList.setData expected Ped at argument 2')
+        assert(getElementType(ped) == 'ped', 'PedList.setData expected Ped at argument 2')
+
+        self._data[ped][key] = value
+    end,
 
 }
 
@@ -97,6 +120,7 @@ function PedContainer()
     })
 
     object._table = {}
+    object._data = {}
 
     return object
 end
