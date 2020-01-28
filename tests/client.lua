@@ -49,6 +49,15 @@ TESTS = {
 
         result = pedList:removeIfNotInSphere(Vector3(10, 10, 10), 5)
         assert(#result == 2)
-    end
+    end,
+    function()
+        -- Test setData, getData
+
+        local pedList = PedContainer()
+        pedList:append(FIXTURES[1])
+
+        pedList:setData(FIXTURES[1], 'key', 'value')
+        assert(pedList:getData(FIXTURES[1], 'key') == 'value')
+    end,
 
 }
