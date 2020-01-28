@@ -2,6 +2,7 @@ local PathNodeClass = {
     x = nil,
     y = nil,
     z = nil,
+    id = nil,
     _links = nil,
 
     getPosition = function(self)

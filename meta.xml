@@ -38,11 +38,10 @@
 
     <script type="client" cache="false" src="client/debug.lua" />
     <script type="client" cache="false" src="client/ped_container.lua" />
+    <script type="client" cache="false" src="client/ped_wrapper.lua" />
     <script type="client" cache="false" src="client/utils.lua" />
     <script type="client" cache="false" src="client/core.lua" />
     <script type="client" cache="false" src="client/sync.lua" />
-
-
 
     <!-- Tests -->
 

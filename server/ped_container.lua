@@ -44,6 +44,8 @@ local PedContainerClass = {
         local ped = Ped(pedSkin, pathNode:getPosition())
 
         self:append(controller, ped)
+        self:setData(ped, 'nextNodeId', pathNode.id)
+
         return ped
     end,
 

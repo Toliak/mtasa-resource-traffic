@@ -1,5 +1,7 @@
 PATH_TREE = Tree3D()
 
-for _, pathNode in pairs(PATH_LIST) do
+for id, pathNode in pairs(PATH_LIST) do
+    pathNode.id = id
+
     PATH_TREE:insert(pathNode:getPosition(), pathNode)
 end

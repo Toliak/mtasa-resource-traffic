@@ -8,6 +8,12 @@ addCommandHandler('spn', function()
     PATH_TREE:insert(position, pathNode)
 end)
 
+addCommandHandler('dbg', function (cmd, id)
+    id = tonumber(id)
+
+    updatePedRotation(localPlayer, PATH_LIST[id])
+end)
+
 addCommandHandler('dbgmd', function()
     setDevelopmentMode(true, true)
 end)

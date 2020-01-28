@@ -639,5 +639,62 @@ TESTS = {
         local collision2 = playerCollision:getCollision(FIXTURES[1])
 
         assert(collision2 == nil)
+    end,
+
+    -- compareWithPrecision test
+    function()
+        assert(compareWithPrecision(1, 1, 0) == true)
+        assert(compareWithPrecision(1, -1, 0) == false)
+
+        assert(compareWithPrecision(2, 1, 4) == true)
+        assert(compareWithPrecision(-90.8, 1, 4) == false)
+    end,
+
+    -- getAngleBetweenPoints test
+    function()
+        -- https://www.desmos.com/calculator/oaxvait33n
+
+        local center = Vector2(1, 2)
+
+        assert(compareWithPrecision(
+                getAngleBetweenPoints(center, Vector2(4, 2)),
+                0,
+                0.001
+        ))
+        assert(compareWithPrecision(
+                getAngleBetweenPoints(center, Vector2(3, 4)),
+                1 / 4 * math.pi,
+                0.001
+        ))
+        assert(compareWithPrecision(
+                getAngleBetweenPoints(center, Vector2(1, 3)),
+                2 / 4 * math.pi,
+                0.001
+        ))
+        assert(compareWithPrecision(
+                getAngleBetweenPoints(center, Vector2(-2, 5)),
+                3 / 4 * math.pi,
+                0.001
+        ))
+        assert(compareWithPrecision(
+                getAngleBetweenPoints(center, Vector2(-1, 2)),
+                4 / 4 * math.pi,
+                0.001
+        ))
+        assert(compareWithPrecision(
+                getAngleBetweenPoints(center, Vector2(-1, 0)),
+                5 / 4 * math.pi,
+                0.001
+        ))
+        assert(compareWithPrecision(
+                getAngleBetweenPoints(center, Vector2(1, 0)),
+                6 / 4 * math.pi,
+                0.001
+        ))
+        assert(compareWithPrecision(
+                getAngleBetweenPoints(center, Vector2(3, 0)),
+                7 / 4 * math.pi,
+                0.001
+        ))
     end
 }
