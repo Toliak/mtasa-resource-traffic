@@ -1,14 +1,3 @@
-local PedDataClass = {
-    controller = nil,
-
-}
-
-function PedData()
-    return setmetatable({}, {
-        __index = PedDataClass
-    })
-end
-
 local PedContainerClass = {
     _table = nil, -- acts like HashMap<Player (controller), HashSet (peds)>
     _data = nil,
@@ -41,7 +30,7 @@ local PedContainerClass = {
         self._table[controller][ped] = true
 
         if self._data[ped] == nil then
-            self._data[ped] = PedData()
+            self._data[ped] = {}
         end
 
         if controller:getType() == 'player' then
