@@ -88,16 +88,15 @@ local PedLogicClass = {
         self._ped:setData('rotateTo', rotation, true)
 
         if isSpawnRotation then
+            customData[self._ped].isSpawnRotationAvailable = true
             self._ped:setData('spawnRotation', rotation, true)
-            self._ped:setData('isSpawnRotationAvailable', true, false)
         end
 
         return rotation
     end,
 
     checkAndSetSpawnRotation = function(self)
-        local isSpawnRotationAvailable = 
-                    self._ped:getData('isSpawnRotationAvailable')
+        local isSpawnRotationAvailable = customData[self._ped].isSpawnRotationAvailable
         if not isSpawnRotationAvailable then
             return
         end
@@ -108,7 +107,7 @@ local PedLogicClass = {
         end
 
         self._ped:setRotation(Vector3(0, 0, spawnRotation))
-        self._ped:setData('isSpawnRotationAvailable', false, false)
+        customData[self._ped].isSpawnRotationAvailable = false
     end,
 
     onWasted = function(self)
@@ -127,6 +126,10 @@ function PedLogic(ped, pedContainer)
 
     object._ped = ped
     object._pedContainer = pedContainer
+
+    if not customData[ped] then
+        customData[ped] = {}
+    end
 
     return object
 end
