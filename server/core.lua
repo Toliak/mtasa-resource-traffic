@@ -52,7 +52,8 @@ local function pedFactory(controller, amount)
 
         local logic = PedLogic(ped, pedContainer)
         addEventHandler('onPedWasted', ped, function()
-            iprint('Убили негра')
+            pedContainer:setData(ped, 'dead', true)
+            
             setTimer(
                 function() logic:remove() end,
                  PED_DEATH_REMOVE, 
@@ -121,4 +122,16 @@ addSharedEventHandler('onPedSetControlState', resourceRoot, function(ped_, state
         triggerClientEvent(clientList, 'onClientPedKey', resourceRoot, ped, stateTable)
     end)
     coroutine.resume(task, client, ped_, stateTable_)
+end)
+
+addSharedEventHandler('onPedDamageShit', resourceRoot, function (ped, weapon, bodypart, loss)
+    ped.health = ped.health - loss
+
+    local isDead = pedContainer:getData(ped, 'dead')
+    if ped.health <= 0 and not isDead then
+        pedContainer:setData(ped, 'dead', true)
+        iprint('what', ped, ped:isDead())
+        triggerEvent('onPedWasted', ped, 0, client, weapon, bodypart)
+        triggerClientEvent(ped:getSyncer(), 'onClientPedWastedShit', resourceRoot, ped)
+    end
 end)

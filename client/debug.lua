@@ -8,12 +8,6 @@ addCommandHandler('spn', function()
     PATH_TREE:insert(position, pathNode)
 end)
 
-addCommandHandler('dbg', function (cmd, id)
-    id = tonumber(id)
-
-    updatePedRotation(localPlayer, PATH_LIST[id])
-end)
-
 addCommandHandler('dbgmd', function()
     setDevelopmentMode(true, true)
 end)
@@ -153,6 +147,7 @@ local function getClientDebugInfoString(ped)
     message = message .. ('#FFFFFFzone: %s\n'):format(zone)
     message = message .. ('#FFFFFFrotateTo: %s\n'):format(rotateTo)
     message = message .. ('#FFFFFFrotation: %s\n'):format(rotation)
+    message = message .. ('#FFFFFFHP:: %s\n'):format(ped:getHealth())
 
     return message
 end
@@ -186,4 +181,24 @@ end)
 -- Lines of sight
 addEventHandler('onClientRender', root, function()
 
+end)
+
+addEventHandler('onClientPedDamage', root, function(attacker, weapon, bodypart, loss)
+    if getElementType(attacker) == 'player' then
+        if attacker ~= localPlayer and pedContainer:isPedInContainer(source) then
+            cancelEvent()
+        end
+    end
+
+    if getElementType(source) ~= 'ped' then
+        return
+    end
+    if attacker ~= localPlayer or pedContainer:isPedInContainer(source) then
+        return
+    end
+
+    -- event provided by
+    -- https://github.com/multitheftauto/mtasa-blue/blob/e11685cab4beb7958ab202261f9c9d9b4ce71e58/Server/mods/deathmatch/logic/CPedSync.cpp#L240
+    triggerServerEvent('onPedDamageShit', resourceRoot, source, weapon, bodypart, loss)
+    cancelEvent()
 end)

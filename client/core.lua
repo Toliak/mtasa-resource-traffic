@@ -6,11 +6,11 @@ addEventHandler('onClientResourceStart', resourceRoot, function()
 end)
 
 addEventHandler('onClientPedWasted', root, function()
-    if not pedContainer:isPedInContainer(source) then
-        return
-    end
+    PedLogic(source, pedContainer):onWasted()
+end)
 
-    pedContainer:remove(source)
+addSharedEventHandler('onClientPedWastedShit', resourceRoot, function(ped)
+    PedLogic(ped, pedContainer):onWasted()
 end)
 
 -- @param table control-state

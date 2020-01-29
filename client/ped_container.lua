@@ -32,6 +32,8 @@ local PedContainerClass = {
 
         self._table[object] = true
         self._data[object] = {}
+
+        object:setStreamable(false)
     end,
 
     setData = function(self, ped, key, value)

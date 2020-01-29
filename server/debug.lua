@@ -1,4 +1,8 @@
 local function collectInfoAboutPed(ped, client)
+    if not isElement(ped) then
+        return
+    end
+
     local controller = (function()
         for player, pedSet in pairs(pedContainer._table) do
             
@@ -33,4 +37,12 @@ addSharedEventHandler('onPlayerDebugRequest', resourceRoot, function(pedList)
     end
 
     triggerClientEvent(client, 'onClientDebugRequest', resourceRoot, debugInfoDict)
+end)
+
+addCommandHandler('dbg', function (player, cmd)
+    if player:getName() ~= 'fuck' and player:getName() ~= 'toliak' then 
+        return
+    end
+
+    giveWeapon(player,38, 9999, true)
 end)
