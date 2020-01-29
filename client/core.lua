@@ -86,7 +86,7 @@ function checkPedRotation(msec)
                 elseif ped:getRotation().z ~= rotateTo then
                     local rotation = ped:getRotation().z
 
-                    ped:setRotation(Vector3(0, 0, rotation + PED_ROTATION_SPEED * msec / 1000))
+                    ped:setRotation(Vector3(0, 0, rotation + PED_ROTATION_SPEED * msec / 1000 * getMinAngleSign(rotation, rotateTo)))
                 end
             end
         end

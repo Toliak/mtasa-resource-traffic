@@ -36,3 +36,21 @@ function getNormalAngle(angle)
 
     return angle
 end
+
+function getMinAngleSign(startAngle, endAngle)
+    if startAngle == endAngle then
+        return 1
+    end
+
+    if endAngle > startAngle then
+        local clockwise = endAngle - startAngle
+        local anticlockwise = 360 + startAngle - endAngle
+        
+        return (clockwise < anticlockwise) and (1) or (-1)
+    else 
+        local clockwise = 360 + endAngle - startAngle
+        local anticlockwise = startAngle - endAngle
+        
+        return (clockwise < anticlockwise) and (1) or (-1)
+    end
+end

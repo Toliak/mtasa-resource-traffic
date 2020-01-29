@@ -704,4 +704,12 @@ TESTS = {
         assert(getNormalAngle(420) == 60)
         assert(getNormalAngle(-90) == 270)
     end,
+
+    -- getMinAngleSign test
+    function()
+        assert(getMinAngleSign(0, 90) == 1)      -- clockwise
+        assert(getMinAngleSign(0, 270) == -1)    -- anti clockwise
+        assert(getMinAngleSign(270, 45) == 1)      -- clockwise
+        assert(getMinAngleSign(270, 180) == -1)    -- anti clockwise
+    end,
 }
