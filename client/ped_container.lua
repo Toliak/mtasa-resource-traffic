@@ -10,6 +10,7 @@ local PedContainerClass = {
         return length
     end,
 
+    -- This method does not clear ped data
     removeIfNotInSphere = function(self, center, radius)
         local result = {}
 
@@ -46,6 +47,21 @@ local PedContainerClass = {
 
         return self._data[ped][key]
     end,
+
+    getAllData = function(self, ped)
+        assert(isElement(ped), 'PedContainer.getAllData expected Ped at argument 2')
+        assert(getElementType(ped) == 'ped', 'PedContainer.getAllData expected Ped at argument 2')
+
+        return self._data[ped]
+    end,
+
+    clearData = function(self, ped)
+        self._data[ped] = nil
+    end,
+
+    isPedInContainer = function(self, ped)
+        return self._table[ped] ~= nil
+    end, 
 
     toList = function(self)
         -- TODO: test

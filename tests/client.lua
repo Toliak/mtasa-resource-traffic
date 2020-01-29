@@ -59,5 +59,38 @@ TESTS = {
         pedList:setData(FIXTURES[1], 'key', 'value')
         assert(pedList:getData(FIXTURES[1], 'key') == 'value')
     end,
+    function()
+        -- Test getAllData
+
+        local pedList = PedContainer()
+        pedList:append(FIXTURES[1])
+
+        pedList:setData(FIXTURES[1], 'key', 'value')
+        pedList:setData(FIXTURES[1], 'key1', 'value1')
+        local data = pedList:getAllData(FIXTURES[1])
+
+        assert(data['key'] == 'value')
+        assert(data['key1'] == 'value1')
+    end,
+    function()
+        -- Test clearData
+
+        local pedList = PedContainer()
+        pedList:append(FIXTURES[1])
+        pedList:setData(FIXTURES[1], 'key', 'value')
+
+        pedList:clearData(FIXTURES[1])
+
+        assert(pedList._data[FIXTURES[1]] == nil)
+    end,
+    function()
+        -- Test isPedInContainer
+
+        local pedList = PedContainer()
+        pedList:append(FIXTURES[1])
+
+        assert(pedList:isPedInContainer(FIXTURES[1]) == true)
+        assert(pedList:isPedInContainer(FIXTURES[2]) == false)
+    end,
 
 }

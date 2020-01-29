@@ -65,14 +65,20 @@ addSharedEventHandler('onPedRequest', resourceRoot, function(amount_)
 end)
 
 -- When ped is no longer needed by client
-addSharedEventHandler('onPedRelease', resourceRoot, function(pedList_)
-    local task = coroutine.create(function(player, pedList)
-        for _, ped in pairs(pedList) do
+addSharedEventHandler('onPedRelease', resourceRoot, function(pedDict_)
+    local task = coroutine.create(function(player, pedDict)
+        for ped, dataTable in pairs(pedDict) do
             local newController = getPedStreamablePlayer(ped, SPAWN_RED_RADIUS, player)
             if newController == nil then
                 pedContainer:destroy(player, ped)
 
             else
+                -- Update data
+
+                for key, value in pairs(dataTable) do
+                    pedContainer:setData(ped, key, value)
+                end
+
                 -- New controller
 
                 pedContainer:changePedController(player, ped, newController)
@@ -80,13 +86,13 @@ addSharedEventHandler('onPedRelease', resourceRoot, function(pedList_)
                         newController,
                         'onClientPedRequestAnswer',
                         resourceRoot,
-                        { ped = pedContainer:getAllData(ped) }
+                        { [ped] = pedContainer:getAllData(ped) }
                 )
             end
 
         end
     end)
-    coroutine.resume(task, client, pedList_)
+    coroutine.resume(task, client, pedDict_)
 end)
 
 addSharedEventHandler('onPedSetControlState', resourceRoot, function(ped_, stateTable_)
@@ -105,12 +111,4 @@ addSharedEventHandler('onPedSetControlState', resourceRoot, function(ped_, state
         triggerClientEvent(clientList, 'onClientPedKey', resourceRoot, ped, stateTable)
     end)
     coroutine.resume(task, client, ped_, stateTable_)
-end)
-
--- Data sync with client only when controller changes
-
-addSharedEventHandler('onPedSetData', resourceRoot, function(ped, dataTable)
-    for key, value in pairs(dataTable) do
-        pedContainer:setData(ped, key, value)
-    end
 end)

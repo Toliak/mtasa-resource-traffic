@@ -143,12 +143,26 @@ addSharedEventHandler('onClientDebugRequest', resourceRoot, function(info)
     pedDebugInfo = info
 end)
 
+local function getClientDebugInfoString(ped)
+    local distance = (ped:getPosition() - localPlayer:getPosition()):getLength()
+    local zone = (distance <= SPAWN_RED_RADIUS) and '#ff0000red' or '#00ff00green'
+    local rotateTo = ped:getData('rotateTo') or 'NIL'
+    local rotation = ped:getRotation().z
+
+    local message = ''
+    message = message .. ('#FFFFFFzone: %s\n'):format(zone)
+    message = message .. ('#FFFFFFrotateTo: %s\n'):format(rotateTo)
+    message = message .. ('#FFFFFFrotation: %s\n'):format(rotation)
+
+    return message
+end
+
 addEventHandler('onClientRender', root, function()
     local Z_OFFSET = 0.7
 
     local peds = viewCollision:getElementsWithin('ped')
     for _, ped in pairs(peds) do
-        local message = 'No info'
+        local message = 'No server info\n'
 
         local data = pedDebugInfo[ped]
         if data ~= nil then
@@ -163,7 +177,7 @@ addEventHandler('onClientRender', root, function()
                 position.x,
                 position.y,
                 position.z + Z_OFFSET, -- startZ,
-                message,
+                message .. getClientDebugInfoString(ped),
                 0
         )
     end

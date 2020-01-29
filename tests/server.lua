@@ -696,5 +696,12 @@ TESTS = {
                 7 / 4 * math.pi,
                 0.001
         ))
-    end
+    end,
+
+    -- getNormalAngle test
+    function()
+        assert(getNormalAngle(140) == 140)
+        assert(getNormalAngle(420) == 60)
+        assert(getNormalAngle(-90) == 270)
+    end,
 }

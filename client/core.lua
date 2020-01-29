@@ -1,5 +1,5 @@
 pedContainer = PedContainer()
-viewCollision = ColShape.Sphere(0, 0, 0, SPAWN_RED_RADIUS)
+viewCollision = ColShape.Sphere(0, 0, 0, SPAWN_GREEN_RADIUS)
 
 addEventHandler('onClientResourceStart', resourceRoot, function()
     viewCollision:attach(localPlayer)
@@ -25,18 +25,26 @@ function checkRelease()
     -- release far peds
     local toRemove = pedContainer:removeIfNotInSphere(localPlayer.position, SPAWN_GREEN_RADIUS)
     if #toRemove > 0 then
-        triggerServerEvent('onPedRelease', resourceRoot, toRemove)
+        local dict = {}
+        for _, ped in pairs(toRemove) do
+            dict[ped] = pedContainer:getAllData(ped)
+
+            pedContainer:clearData(ped)
+        end
+
+        triggerServerEvent('onPedRelease', resourceRoot, dict)
     end
 end
 setTimer(checkRelease, CHECK_TIME_RELEASE, 0)
 
 function updatePedRotation(ped, node)
     local angle = getAngleBetweenPoints(ped:getPosition(), node:getPosition())
-    local rotation = math.deg(angle) - 90
+    local rotation = getNormalAngle(math.deg(angle) - 90)
 
     --ped:setRotation(Vector3(0, 0, rotation))
-    pedContainer:setData(ped, 'rotateTo', rotation)
-    --ped:setCameraRotation(rotation)
+    -- pedContainer:setData(ped, 'rotateTo', rotation)
+    ped:setData('rotateTo', rotation, true)
+    -- ped:setCameraRotation(rotation)
     --ped:setLookAt(node:getPosition())
     --ped:setAimTarget(node:getPosition())
 end
@@ -87,18 +95,18 @@ end
 setTimer(checkPedKeys, CHECK_TIME_PED_KEYS, 0)
 
 function checkPedRotation(msec)
-    local pedList = pedContainer:toList()
+    local pedList = viewCollision:getElementsWithin('ped')
     for _, ped in pairs(pedList) do
         if ped:isOnGround() then
-            local rotateTo = pedContainer:getData(ped, 'rotateTo')
-            if rotateTo ~= nil and compareWithPrecision(ped:getRotation().z, rotateTo, 8) then
-                pedContainer:setData(ped, 'rotateTo', nil)
-                ped:setRotation(Vector3(0, 0, rotateTo))
-            elseif rotateTo ~= nil then
+            local rotateTo = ped:getData('rotateTo')
+            if rotateTo ~= false then
+                if ped:getRotation().z ~= rotateTo and compareWithPrecision(ped:getRotation().z, rotateTo, 30) then
+                    ped:setRotation(Vector3(0, 0, rotateTo))
+                elseif ped:getRotation().z ~= rotateTo then
+                    local rotation = ped:getRotation().z
 
-                local rotation = ped.rotation.z
-
-                ped:setRotation(Vector3(0, 0, rotation + PED_ROTATION_SPEED * msec / 1000))
+                    ped:setRotation(Vector3(0, 0, rotation + PED_ROTATION_SPEED * msec / 1000))
+                end
             end
         end
     end

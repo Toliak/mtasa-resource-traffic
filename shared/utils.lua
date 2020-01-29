@@ -23,3 +23,14 @@ function getAngleBetweenPoints(pointFrom, pointTo)
 
     return acos
 end
+
+function getNormalAngle(angle)
+    while angle < 0 do
+        angle = angle + 360
+    end
+    while angle > 360 do
+        angle = angle - 360
+    end
+
+    return angle
+end
