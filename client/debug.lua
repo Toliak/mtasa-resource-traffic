@@ -154,14 +154,14 @@ addEventHandler('onClientRender', root, function()
 
         local color
         if SPAWN_RED_RADIUS >= distance then
-            color = 0xFFB74649
+            color = 0xAAB74649
         elseif SPAWN_RED_RADIUS < distance and distance <= SPAWN_GREEN_RADIUS then
-            color = 0xFF539D3C
+            color = 0xAA539D3C
         else
-            color = 0xFFD9D9D9
+            color = 0xAAD9D9D9
         end
         if currentNode == pathNode then
-            color = 0xFF3A3276      -- select currentNode
+            color = 0xAA3A3276      -- select currentNode
         end
 
         dxDrawLine3D(
@@ -195,7 +195,7 @@ addEventHandler('onClientRender', root, function()
                         endNode.x,
                         endNode.y,
                         endNode.z, -- endZ
-                        0xFF343C76, -- color
+                        0xAA343C76, -- color
                         2                        -- width
                 )
             end
@@ -212,7 +212,7 @@ addEventHandler('onClientRender', root, function()
                         endNode.x,
                         endNode.y,
                         endNode.z - 0.1, -- endZ
-                        0xFF4F2F74, -- color
+                        0xAA4F2F74, -- color
                         2                        -- width
                 )
             end
@@ -229,7 +229,7 @@ addEventHandler('onClientRender', root, function()
                         endNode.x,
                         endNode.y,
                         endNode.z - 0.1, -- endZ
-                        0xFFAA7339, -- color
+                        0xAAAA7339, -- color
                         2                        -- width
                 )
                 dxDrawLine3D(
@@ -239,7 +239,7 @@ addEventHandler('onClientRender', root, function()
                         endNode.x,
                         endNode.y,
                         endNode.z - 2, -- endZ
-                        0xFF804C15,
+                        0xAA804C15,
                         4                        -- width
                 )
             end
