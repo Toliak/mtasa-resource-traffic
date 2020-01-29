@@ -1,11 +1,84 @@
 -- spawn point
+
+local currentNode = nil
+
+-- set current node
+addCommandHandler('scn', function(cmd, id)
+    id = tonumber(id)
+    currentNode = PATH_LIST[id]
+end)
+
+-- spawn helper node
+addCommandHandler('sph', function()
+    assert(currentNode ~= nil)
+
+    local position = localPlayer.position
+
+    local helperNode = PathNode(position.x, position.y, position.z)
+    helperNode.id = #PATH_HELPER_LIST + 1
+    currentNode:addLink('helper', #PATH_HELPER_LIST + 1)
+
+    table.insert(PATH_HELPER_LIST, helperNode)
+end)
+
+-- spawn helper node in left and right side
+addCommandHandler('sphd', function()
+    assert(currentNode ~= nil)
+
+    local position = localPlayer.position
+
+    local LENGTH = 0.7
+    local rotation = localPlayer.rotation.z
+    local angle = math.rad(rotation + 90)
+
+    local deltaList = {
+        Vector2(LENGTH * math.cos(angle + math.pi/2), LENGTH * math.sin(angle + math.pi/2)),
+        Vector2(LENGTH * 2 * math.cos(angle + math.pi/2), LENGTH* 2 * math.sin(angle + math.pi/2)),
+        Vector2(LENGTH * math.cos(angle - math.pi/2), LENGTH * math.sin(angle - math.pi/2)),
+        Vector2(LENGTH * 2 * math.cos(angle - math.pi/2), LENGTH* 2 * math.sin(angle - math.pi/2)),
+    }
+
+    for _, delta in pairs(deltaList) do 
+        local helperNode = PathNode(
+            position.x + delta.x, 
+            position.y + delta.y, 
+            position.z
+        )
+        helperNode.id = #PATH_HELPER_LIST + 1
+        currentNode:addLink('helper', #PATH_HELPER_LIST + 1)
+
+        table.insert(PATH_HELPER_LIST, helperNode)
+    end
+end)
+
+-- spawn node
 addCommandHandler('spn', function()
     local position = localPlayer.position
 
     local pathNode = PathNode(position.x, position.y, position.z)
-    table.insert(PATH_LIST, pathNode)
+    pathNode.id = #PATH_LIST + 1
 
+    table.insert(PATH_LIST, pathNode)
     PATH_TREE:insert(position, pathNode)
+
+    currentNode = pathNode
+end)
+
+-- spawn node with links
+addCommandHandler('spn2', function()
+    assert(currentNode ~= nil)
+
+    local position = localPlayer.position
+
+    local pathNode = PathNode(position.x, position.y, position.z)
+    pathNode.id = #PATH_LIST + 1
+    pathNode:addLink('backward', currentNode.id)
+    currentNode:addLink('forward', pathNode.id)
+
+    table.insert(PATH_LIST, pathNode)
+    PATH_TREE:insert(position, pathNode)
+
+    currentNode = pathNode
 end)
 
 addCommandHandler('dbgmd', function()
@@ -38,14 +111,30 @@ function pathNodeToString(pathNode)
     return ('PathNode(%f, %f, %f, %s)'):format(pathNode.x, pathNode.y, pathNode.z, linksTableString)
 end
 
+-- save all
+
 addCommandHandler('ss', function()
     local string = 'PATH_LIST = {\n'
     for _, pathNode in ipairs(PATH_LIST) do
         string = string .. '    ' .. pathNodeToString(pathNode) .. ',\n'
     end
+    string = string .. '}\n'
+
+    local file = File(('path_list_%d.lua'):format(getTickCount()))
+    file:write(string)
+    file:close()
+
+    string = 'PATH_HELPER_LIST = {\n'
+    for _, pathNode in ipairs(PATH_HELPER_LIST) do
+        string = string .. '    ' .. pathNodeToString(pathNode) .. ',\n'
+    end
     string = string .. '}'
 
-    outputConsole(string)
+    file = File(('path_helper_list_%d.lua'):format(getTickCount()))
+    file:write(string)
+    file:close()
+
+    outputConsole('done')
 end)
 
 local RENDER_RADIUS = 100
@@ -71,6 +160,9 @@ addEventHandler('onClientRender', root, function()
         else
             color = 0xFFD9D9D9
         end
+        if currentNode == pathNode then
+            color = 0xFF3A3276      -- select currentNode
+        end
 
         dxDrawLine3D(
                 pathNode.x,
@@ -81,6 +173,14 @@ addEventHandler('onClientRender', root, function()
                 pathNode.z - 2, -- endZ
                 color,
                 4                        -- width
+        )
+
+        dxDrawTextOnPosition(
+            pathNode.x,
+            pathNode.y,
+            pathNode.z + 0.6, -- startZ
+            ('ID: %d'):format(pathNode.id),
+            0
         )
 
         local forwardLinks = pathNode:getLink('forward')
@@ -117,6 +217,68 @@ addEventHandler('onClientRender', root, function()
                 )
             end
         end
+        local helpersLinks = pathNode:getLink('helper')
+        if helpersLinks ~= nil then
+            for _, id in pairs(helpersLinks) do
+                local endNode = PATH_HELPER_LIST[id]
+
+                dxDrawLine3D(
+                        pathNode.x,
+                        pathNode.y,
+                        pathNode.z - 0.1, -- startZ
+                        endNode.x,
+                        endNode.y,
+                        endNode.z - 0.1, -- endZ
+                        0xFFAA7339, -- color
+                        2                        -- width
+                )
+                dxDrawLine3D(
+                        endNode.x,
+                        endNode.y,
+                        endNode.z + 0.5, -- startZ
+                        endNode.x,
+                        endNode.y,
+                        endNode.z - 2, -- endZ
+                        0xFF804C15,
+                        4                        -- width
+                )
+            end
+        end
+    end
+end)
+
+addEventHandler('onClientRender', root, function()
+    if currentNode then
+        
+        local distance = (localPlayer.position - currentNode:getPosition()):getLength()
+        local color = '#FFFFFF'
+        if distance > 2.5 then
+            color = '#FF0000'
+        elseif distance > 1.8 then
+            color = '#FFFF00'
+        elseif distance > 1 then
+            color = '#00FF00'
+        end
+        local text = '#FFFFFF ID: %d\nDistance: %s%f'
+        text = text:format(currentNode.id, color, distance)
+
+        dxDrawText(
+            text,
+            10,          --leftX
+            10,  -- topY
+            10,  -- rightX
+            10,  -- bottomY
+            0xFFFFFFFF,
+            1,  --scaleXY
+            1,  --scaleY
+            'bankgothic',
+            'left',
+            'top',
+            false,      -- clip
+            false,       -- wordBreak
+            false,      -- postGUI
+            true       -- colorCoded
+        )
     end
 end)
 
@@ -176,99 +338,5 @@ addEventHandler('onClientRender', root, function()
                 message .. getClientDebugInfoString(ped),
                 0
         )
-    end
-end)
-
--- Lines of sight
-local function processLines(ped)
-    local rotation = ped:getRotation().z
-    local angle = math.rad(rotation + 90)
-
-    local LENGTH = 5
-    local START_LENGTH = 0.1
-
-    local angleDeltaList = {
-        math.rad(-15),
-        0,
-        math.rad(15),
-    }
-
-    local zOffsetList = {-0.3, 0.3}
-
-    for _, adelta in pairs(angleDeltaList) do
-        for _, z in pairs(zOffsetList) do
-            local currentAngle = angle + adelta
-
-            local startPoint = ped:getPosition() + Vector3(
-                START_LENGTH * math.cos(currentAngle),
-                START_LENGTH * math.sin(currentAngle), 
-                z
-                )
-            local endPoint = startPoint + Vector3(
-                LENGTH * math.cos(currentAngle),
-                LENGTH * math.sin(currentAngle), 
-                0
-                )
-
-            local hit, hitX, hitY, hitZ = processLineOfSight(
-                startPoint, 
-                endPoint,
-                true,       -- checkBuildings
-                true,       -- checkVehicles
-                true,       -- checkPlayers
-                true,       -- checkObjects
-                true,       -- checkDummies
-                false,      -- seeThroughStuff
-                false,      -- ignoreSomeObjectsForCamera
-                false,      -- shootThroughStuff
-                ped        -- ignoredElement
-            )
-
-            local color = 0xFFFFFFFF
-            if hit then
-                endPoint = Vector3(hitX, hitY, hitZ)
-                local length = (endPoint - startPoint):getLength()
-                
-                color = 0xFFFF0000
-                local white = math.ceil(length / LENGTH * 128)
-
-                color = bitOr(color, bitLShift(white, 8), white)
-            end
-
-            dxDrawLine3D(startPoint, endPoint, color)
-        end
-    end
-end
-function processLinesLogic(ped)
-    local logic = PedLogic(ped, pedContainer)
-
-    local angleDeltaList = {
-        [math.rad(-35)] = 'checkRightSight',
-        [0] = 'checkFrontSight',
-        [math.rad(35)] = 'checkLeftSight',
-    }
-
-    local rotation = ped:getRotation().z
-    local angle = math.rad(rotation + 90)
-
-    for adelta, method  in pairs(angleDeltaList) do
-        local currentAngle = angle + adelta
-
-        local startPoint = ped:getPosition()
-        local endPoint = startPoint + Vector3(
-            2 * math.cos(currentAngle),
-            2 * math.sin(currentAngle), 
-            0
-        )
-
-        local checker = logic[method](logic)
-        local color = checker and 0xFFFFFFFF or 0xFFFF0000
-
-        dxDrawLine3D(startPoint, endPoint, color)
-    end
-end
-addEventHandler('onClientRender', root, function()
-    for ped, _ in pairs(pedContainer._table) do 
-        processLinesLogic(ped)
     end
 end)

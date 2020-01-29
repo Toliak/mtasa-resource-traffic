@@ -21,20 +21,26 @@ local PathNodeClass = {
         self._links[linkName] = id
     end,
 
+    addLink = function(self, linkName, id)
+        if not self._links[linkName] then
+            self._links[linkName] = {}
+        end
+
+        table.insert(self._links[linkName], id)
+    end,
+
     getLink = function(self, linkName)
         return self._links[linkName]
     end
 }
 
 function PathNode(x, y, z, links)
-    links = links or {}
-
     local object = setmetatable({}, {
         __index = PathNodeClass,
     })
 
     object:setPosition(x, y, z)
-    object._links = links
+    object._links = links or {}
 
     return object
 end
