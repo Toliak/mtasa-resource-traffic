@@ -12,6 +12,15 @@ local PedLogicClass = {
     getDirection = function(self)
         return self._pedContainer:getData(self._ped, 'direction')
     end,
+
+    -- can ped be rotated
+    isPedFree = function(self)
+        if self._ped:isDead() or not self._ped:isOnGround() then
+            return false
+        end
+
+        return true
+    end,
     
     -- can ped go to the next node
     checkAndUpdateNextNode = function(self)
@@ -96,6 +105,10 @@ local PedLogicClass = {
     end,
 
     checkAndSetSpawnRotation = function(self)
+        if not self:isPedFree() then
+            return
+        end
+
         local isSpawnRotationAvailable = customData[self._ped].isSpawnRotationAvailable
         if not isSpawnRotationAvailable then
             return
@@ -108,6 +121,28 @@ local PedLogicClass = {
 
         self._ped:setRotation(Vector3(0, 0, spawnRotation))
         customData[self._ped].isSpawnRotationAvailable = false
+    end,
+
+    checkAndUpdateRotation = function(self, msec)
+        if not self:isPedFree() then
+            return
+        end
+
+        local rotateTo = self._ped:getData('rotateTo')
+        if rotateTo == false then
+            return
+        end
+
+        if self._ped:getRotation().z ~= rotateTo and compareWithPrecision(self._ped:getRotation().z, rotateTo, 15) then
+            self._ped:setRotation(Vector3(0, 0, rotateTo))
+
+        elseif self._ped:getRotation().z ~= rotateTo then
+            local rotation = self._ped:getRotation().z
+
+            self._ped:setRotation(
+                Vector3(0, 0, rotation + PED_ROTATION_SPEED * msec / 1000 * getMinAngleSign(rotation, rotateTo)))
+        end
+
     end,
 
     onWasted = function(self)

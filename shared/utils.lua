@@ -17,8 +17,6 @@ function getAngleBetweenPoints(pointFrom, pointTo)
     local asin = math.asin(sin)
     local acos = math.acos(cos)
 
-    iprint(delta)
-
     if asin < 0 then
         return math.pi * 2 - acos
     end

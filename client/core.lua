@@ -74,22 +74,10 @@ setTimer(checkPedKeys, CHECK_TIME_PED_KEYS, 0)
 function checkPedRotation(msec)
     local pedList = viewCollision:getElementsWithin('ped')
     for _, ped in pairs(pedList) do
-        if ped:isOnGround() then
-
-            PedLogic(ped, pedContainer):checkAndSetSpawnRotation()
-            
-
-            local rotateTo = ped:getData('rotateTo')
-            if rotateTo ~= false then
-                if ped:getRotation().z ~= rotateTo and compareWithPrecision(ped:getRotation().z, rotateTo, 15) then
-                    ped:setRotation(Vector3(0, 0, rotateTo))
-                elseif ped:getRotation().z ~= rotateTo then
-                    local rotation = ped:getRotation().z
-
-                    ped:setRotation(Vector3(0, 0, rotation + PED_ROTATION_SPEED * msec / 1000 * getMinAngleSign(rotation, rotateTo)))
-                end
-            end
-        end
+        local logic = PedLogic(ped, pedContainer)
+        
+        logic:checkAndSetSpawnRotation()
+        logic:checkAndUpdateRotation(msec)
     end
 end
 addEventHandler('onClientPreRender', root, checkPedRotation)
@@ -99,7 +87,27 @@ function checkPedState()
     for _, ped in pairs(pedList) do
 
         PedLogic(ped, pedContainer):checkAndUpdateNextNode()
-
     end
 end
 setTimer(checkPedState, CHECK_TIME_PED_STATE, 0)
+
+-- damage sync
+addEventHandler('onClientPedDamage', root, function(attacker, weapon, bodypart, loss)
+    if getElementType(attacker) == 'player' then
+        if attacker ~= localPlayer and pedContainer:isPedInContainer(source) then
+            cancelEvent()
+        end
+    end
+
+    if getElementType(source) ~= 'ped' then
+        return
+    end
+    if attacker ~= localPlayer or pedContainer:isPedInContainer(source) then
+        return
+    end
+
+    -- event provided by
+    -- https://github.com/multitheftauto/mtasa-blue/blob/e11685cab4beb7958ab202261f9c9d9b4ce71e58/Server/mods/deathmatch/logic/CPedSync.cpp#L240
+    triggerServerEvent('onPedDamageShit', resourceRoot, source, weapon, bodypart, loss)
+    cancelEvent()
+end)
