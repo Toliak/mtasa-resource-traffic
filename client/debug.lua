@@ -180,6 +180,95 @@ addEventHandler('onClientRender', root, function()
 end)
 
 -- Lines of sight
-addEventHandler('onClientRender', root, function()
+local function processLines(ped)
+    local rotation = ped:getRotation().z
+    local angle = math.rad(rotation + 90)
 
+    local LENGTH = 5
+    local START_LENGTH = 0.1
+
+    local angleDeltaList = {
+        math.rad(-15),
+        0,
+        math.rad(15),
+    }
+
+    local zOffsetList = {-0.3, 0.3}
+
+    for _, adelta in pairs(angleDeltaList) do
+        for _, z in pairs(zOffsetList) do
+            local currentAngle = angle + adelta
+
+            local startPoint = ped:getPosition() + Vector3(
+                START_LENGTH * math.cos(currentAngle),
+                START_LENGTH * math.sin(currentAngle), 
+                z
+                )
+            local endPoint = startPoint + Vector3(
+                LENGTH * math.cos(currentAngle),
+                LENGTH * math.sin(currentAngle), 
+                0
+                )
+
+            local hit, hitX, hitY, hitZ = processLineOfSight(
+                startPoint, 
+                endPoint,
+                true,       -- checkBuildings
+                true,       -- checkVehicles
+                true,       -- checkPlayers
+                true,       -- checkObjects
+                true,       -- checkDummies
+                false,      -- seeThroughStuff
+                false,      -- ignoreSomeObjectsForCamera
+                false,      -- shootThroughStuff
+                ped        -- ignoredElement
+            )
+
+            local color = 0xFFFFFFFF
+            if hit then
+                endPoint = Vector3(hitX, hitY, hitZ)
+                local length = (endPoint - startPoint):getLength()
+                
+                color = 0xFFFF0000
+                local white = math.ceil(length / LENGTH * 128)
+
+                color = bitOr(color, bitLShift(white, 8), white)
+            end
+
+            dxDrawLine3D(startPoint, endPoint, color)
+        end
+    end
+end
+function processLinesLogic(ped)
+    local logic = PedLogic(ped, pedContainer)
+
+    local angleDeltaList = {
+        [math.rad(-35)] = 'checkRightSight',
+        [0] = 'checkFrontSight',
+        [math.rad(35)] = 'checkLeftSight',
+    }
+
+    local rotation = ped:getRotation().z
+    local angle = math.rad(rotation + 90)
+
+    for adelta, method  in pairs(angleDeltaList) do
+        local currentAngle = angle + adelta
+
+        local startPoint = ped:getPosition()
+        local endPoint = startPoint + Vector3(
+            2 * math.cos(currentAngle),
+            2 * math.sin(currentAngle), 
+            0
+        )
+
+        local checker = logic[method](logic)
+        local color = checker and 0xFFFFFFFF or 0xFFFF0000
+
+        dxDrawLine3D(startPoint, endPoint, color)
+    end
+end
+addEventHandler('onClientRender', root, function()
+    for ped, _ in pairs(pedContainer._table) do 
+        processLinesLogic(ped)
+    end
 end)

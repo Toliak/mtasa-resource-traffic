@@ -14,8 +14,12 @@ local PedLogicClass = {
     end,
 
     -- can ped be rotated
-    isPedFree = function(self)
+    canPedBeRotated = function(self)
         if self._ped:isDead() or not self._ped:isOnGround() then
+            return false
+        end
+
+        if self._pedContainer:isPedInContainer(self._ped) and self._pedContainer:getData(self._ped, 'goesAround') then
             return false
         end
 
@@ -105,7 +109,7 @@ local PedLogicClass = {
     end,
 
     checkAndSetSpawnRotation = function(self)
-        if not self:isPedFree() then
+        if not self:canPedBeRotated() then
             return
         end
 
@@ -124,7 +128,7 @@ local PedLogicClass = {
     end,
 
     checkAndUpdateRotation = function(self, msec)
-        if not self:isPedFree() then
+        if not self:canPedBeRotated() then
             return
         end
 
@@ -143,6 +147,63 @@ local PedLogicClass = {
                 Vector3(0, 0, rotation + PED_ROTATION_SPEED * msec / 1000 * getMinAngleSign(rotation, rotateTo)))
         end
 
+    end,
+
+    _checkSight = function(self, angleDelta)
+        local rotation = self._ped:getRotation().z
+        local angle = math.rad(rotation + 90)
+
+        local LENGTH = 2
+        local START_LENGTH = 0.1
+        local SIGHT_Z_OFFSET = {-0.3, 0.3}
+        local CRITICAL_DISTANCE = 0.8
+
+        for _, z in pairs(SIGHT_Z_OFFSET) do
+            local currentAngle = angle + angleDelta
+
+            local startPoint = self._ped:getPosition()
+            local endPoint = startPoint + Vector3(
+                LENGTH * math.cos(currentAngle),
+                LENGTH * math.sin(currentAngle), 
+                0
+                )
+
+            local hit, hitX, hitY, hitZ = processLineOfSight(
+                startPoint, 
+                endPoint,
+                true,       -- checkBuildings
+                true,       -- checkVehicles
+                true,       -- checkPlayers
+                true,       -- checkObjects
+                true,       -- checkDummies
+                false,      -- seeThroughStuff
+                false,      -- ignoreSomeObjectsForCamera
+                false,      -- shootThroughStuff
+                self._ped        -- ignoredElement
+            )
+
+            if hit then
+                local distance = (Vector3(hitX, hitY, hitZ) - startPoint):getLength()
+
+                if distance <= CRITICAL_DISTANCE then
+                    return false
+                end
+            end
+        end
+
+        return true
+    end,
+
+    checkLeftSight = function(self)
+        return self:_checkSight(math.rad(35))
+    end,
+
+    checkRightSight = function(self)
+        return self:_checkSight(math.rad(-35))
+    end,
+
+    checkFrontSight = function(self)
+        return self:_checkSight(0)
     end,
 
     onWasted = function(self)

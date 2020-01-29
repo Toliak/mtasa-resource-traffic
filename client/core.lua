@@ -54,17 +54,26 @@ function checkPedKeys()
         logic:updateRotationTo()
 
         local states = {
-            forwards = false,
+            forwards = true,
             backwards = false,
             left = false,
             right = false,
-        }
-        local keys = {
-            'forwards',
+            walk = true,
         }
 
-        states[keys[math.random(1, #keys)]] = true
-        states['walk'] = true
+        if (not logic:checkLeftSight()) then
+            states.left = false
+            states.right = true
+            pedContainer:setData(ped, 'goesAround', true)
+        elseif (not logic:checkRightSight()) or (not logic:checkFrontSight()) then
+            states.left = true
+            states.right = false
+            pedContainer:setData(ped, 'goesAround', true)
+        else
+            states.left = false
+            states.right = false
+            pedContainer:setData(ped, 'goesAround', false)
+        end
 
         setPedControlStateShared(ped, states)
     end
