@@ -64,15 +64,15 @@ function checkPedKeys()
         if (not logic:checkLeftSight()) then
             states.left = false
             states.right = true
-            pedContainer:setData(ped, 'goesAround', true)
+            ped:setData('goesAround', true)
         elseif (not logic:checkRightSight()) or (not logic:checkFrontSight()) then
             states.left = true
             states.right = false
-            pedContainer:setData(ped, 'goesAround', true)
+            ped:setData('goesAround', true)
         else
             states.left = false
             states.right = false
-            pedContainer:setData(ped, 'goesAround', false)
+            ped:setData('goesAround', false)
         end
 
         setPedControlStateShared(ped, states)

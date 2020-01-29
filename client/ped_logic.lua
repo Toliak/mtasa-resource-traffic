@@ -19,7 +19,7 @@ local PedLogicClass = {
             return false
         end
 
-        if self._pedContainer:isPedInContainer(self._ped) and self._pedContainer:getData(self._ped, 'goesAround') then
+        if self._ped:getData('goesAround') then
             return false
         end
 
