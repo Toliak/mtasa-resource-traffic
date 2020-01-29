@@ -49,6 +49,16 @@ local function pedFactory(controller, amount)
 
         local ped = pedContainer:createPed(controller, skin, node)
         result[ped] = pedContainer:getAllData(ped)
+
+        local logic = PedLogic(ped, pedContainer)
+        addEventHandler('onPedWasted', ped, function()
+            iprint('Убили негра')
+            setTimer(
+                function() logic:remove() end,
+                 PED_DEATH_REMOVE, 
+                 1
+                )
+        end)
     end
 
     return result

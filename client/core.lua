@@ -5,6 +5,14 @@ addEventHandler('onClientResourceStart', resourceRoot, function()
     viewCollision:attach(localPlayer)
 end)
 
+addEventHandler('onClientPedWasted', root, function()
+    if not pedContainer:isPedInContainer(source) then
+        return
+    end
+
+    pedContainer:remove(source)
+end)
+
 -- @param table control-state
 local function setPedControlStateShared(ped, stateTable)
     for control, state in pairs(stateTable) do

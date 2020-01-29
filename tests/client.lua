@@ -92,5 +92,14 @@ TESTS = {
         assert(pedList:isPedInContainer(FIXTURES[1]) == true)
         assert(pedList:isPedInContainer(FIXTURES[2]) == false)
     end,
+    function()
+        -- Test remove
+
+        local pedList = PedContainer()
+        pedList:append(FIXTURES[1])
+        pedList:remove(FIXTURES[1])
+
+        assert(pedList:isPedInContainer(FIXTURES[1]) == false)
+    end,
 
 }

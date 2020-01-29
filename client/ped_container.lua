@@ -63,6 +63,11 @@ local PedContainerClass = {
         return self._table[ped] ~= nil
     end, 
 
+    remove = function(self, ped)
+        self._table[ped] = nil
+        self._data[ped] = nil
+    end,
+
     toList = function(self)
         -- TODO: test
 
