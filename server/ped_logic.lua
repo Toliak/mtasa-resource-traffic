@@ -3,7 +3,6 @@ local PedLogicClass = {
     _pedContainer = nil,
 
     remove = function(self)
-        iprint(self._ped)
         local controller = self._ped:getSyncer()
         self._pedContainer:destroy(controller, self._ped)
     end,

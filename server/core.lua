@@ -48,12 +48,13 @@ local function pedFactory(controller, amount)
         local node = pathNodesGreen[math.random(1, #pathNodesGreen)]
 
         local ped = pedContainer:createPed(controller, skin, node)
+        ped:setPosition(node:getPosition())
         result[ped] = pedContainer:getAllData(ped)
 
         local logic = PedLogic(ped, pedContainer)
         addEventHandler('onPedWasted', ped, function()
             pedContainer:setData(ped, 'dead', true)
-            
+
             setTimer(
                 function() logic:remove() end,
                  PED_DEATH_REMOVE, 
@@ -130,7 +131,6 @@ addSharedEventHandler('onPedDamageShit', resourceRoot, function (ped, weapon, bo
     local isDead = pedContainer:getData(ped, 'dead')
     if ped.health <= 0 and not isDead then
         pedContainer:setData(ped, 'dead', true)
-        iprint('what', ped, ped:isDead())
         triggerEvent('onPedWasted', ped, 0, client, weapon, bodypart)
         triggerClientEvent(ped:getSyncer(), 'onClientPedWastedShit', resourceRoot, ped)
     end

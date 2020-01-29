@@ -147,6 +147,7 @@ local function getClientDebugInfoString(ped)
     message = message .. ('#FFFFFFzone: %s\n'):format(zone)
     message = message .. ('#FFFFFFrotateTo: %s\n'):format(rotateTo)
     message = message .. ('#FFFFFFrotation: %s\n'):format(rotation)
+    message = message .. ('#FFFFFFspawnRotation: %s\n'):format(ped:getData('spawnRotation') or 'NIL')
     message = message .. ('#FFFFFFHP:: %s\n'):format(ped:getHealth())
 
     return message
