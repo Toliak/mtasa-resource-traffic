@@ -94,15 +94,17 @@ addEventHandler('onClientPreRender', root, checkPedRotation)
 function checkPedState()
     local pedList = pedContainer:toList()
     for _, ped in pairs(pedList) do
+        local logic = PedLogic(ped, pedContainer)
 
-        PedLogic(ped, pedContainer):checkAndUpdateNextNode()
+        logic:checkAndUpdateNextNode()
+        logic:updateNextNodeHelper()
     end
 end
 setTimer(checkPedState, CHECK_TIME_PED_STATE, 0)
 
 -- damage sync
 addEventHandler('onClientPedDamage', root, function(attacker, weapon, bodypart, loss)
-    if getElementType(attacker) == 'player' then
+    if isElement(attacker) and getElementType(attacker) == 'player' then
         if attacker ~= localPlayer and pedContainer:isPedInContainer(source) then
             cancelEvent()
         end

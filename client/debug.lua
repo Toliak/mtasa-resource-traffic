@@ -358,7 +358,7 @@ end
 
 addEventHandler('onClientRender', root, function()
     if not debugMode then
-        return false 
+        return false
     end
 
     local Z_OFFSET = 0.7
@@ -383,5 +383,35 @@ addEventHandler('onClientRender', root, function()
                 message .. getClientDebugInfoString(ped),
                 0
         )
+        
+    end
+end)
+
+addEventHandler('onClientRender', root, function()
+    if not debugMode then
+        return
+    end
+
+    local peds = pedContainer._table
+    for ped, _ in pairs(peds) do
+        local bonePosition = ped:getBonePosition(8)
+        
+        local logic = PedLogic(ped, pedContainer)
+        local helperNode = logic:getNextHelperNode() or logic:getNextNode()
+        if helperNode then
+            dxDrawLine3D(
+                    bonePosition,
+                    helperNode:getPosition(),
+                    0x77801D15,
+                    4                        -- width
+            )
+        else 
+            dxDrawLine3D(
+                    bonePosition,
+                    bonePosition + Vector3(0,0,1),
+                    0x77801D15,
+                    4                        -- width
+            )
+        end
     end
 end)

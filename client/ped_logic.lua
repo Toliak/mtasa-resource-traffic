@@ -9,6 +9,11 @@ local PedLogicClass = {
         return PATH_LIST[nextNodeId]
     end,
 
+    getNextHelperNode = function(self)
+        local nodeId = self._pedContainer:getData(self._ped, 'helperNodeId')
+        return PATH_HELPER_LIST[nodeId]
+    end,
+
     getDirection = function(self)
         return self._pedContainer:getData(self._ped, 'direction')
     end,
@@ -94,7 +99,7 @@ local PedLogicClass = {
     end,
 
     updateRotationTo = function(self, isSpawnRotation)
-        local node = self:getNextNode()
+        local node = self:getNextHelperNode() or self:getNextNode()
         local angle = getAngleBetweenPoints(self._ped:getPosition(), node:getPosition())
         local rotation = getNormalAngle(math.deg(angle) - 90)
 
@@ -204,6 +209,54 @@ local PedLogicClass = {
 
     checkFrontSight = function(self)
         return self:_checkSight(0)
+    end,
+
+    updateNextNodeHelper = function(self)
+        local nextNode = self:getNextNode()
+        if not nextNode then 
+            return
+        end
+
+        local helpers = nextNode:getLink('helper')
+        if helpers == nil or #helpers == 0 then
+            return
+        end
+
+        local nodes = {nextNode}
+        for _, helperId in pairs(helpers) do
+            table.insert(nodes, PATH_HELPER_LIST[helperId])
+        end
+        
+        local rotation = self._ped:getRotation().z
+        local angle = math.rad(rotation + 90)
+        local position = self._ped:getPosition()
+
+        local minDistance = nil
+        local minNode = nil
+
+        for _, helperNode in pairs(nodes) do
+            local delta = helperNode:getPosition() - position
+            local rotatedPoint = rotatePointAroundPivot(
+                Vector2(delta.x, delta.y), 
+                Vector2(0,0),
+                -angle
+            )
+
+            local manhattanDistance = math.abs(rotatedPoint.x) + math.abs(rotatedPoint.y)
+            if minNode == nil or minDistance > manhattanDistance then
+                minDistance = manhattanDistance
+                minNode = helperNode
+            end
+        end
+
+        assert(minNode ~= nil)
+
+        if minNode == nextNode then
+            self._pedContainer:setData(self._ped, 'helperNodeId', nil)
+            return
+        end
+        
+        self._pedContainer:setData(self._ped, 'helperNodeId', minNode.id)
     end,
 
     onWasted = function(self)

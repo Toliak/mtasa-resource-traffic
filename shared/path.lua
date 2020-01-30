@@ -5,3 +5,7 @@ for id, pathNode in pairs(PATH_LIST) do
 
     PATH_TREE:insert(pathNode:getPosition(), pathNode)
 end
+
+for id, pathNode in pairs(PATH_HELPER_LIST) do
+    pathNode.id = id
+end
