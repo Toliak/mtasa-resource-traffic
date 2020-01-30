@@ -6,6 +6,18 @@ local function createRandomDelta(radius)
     )
 end
 
+local function shuffle(t)
+    local rand = math.random 
+    assert(t, "table.shuffle() expected a table, got nil")
+    local iterations = #t
+    local j
+    
+    for i = iterations, 2, -1 do
+        j = rand(i)
+        t[i], t[j] = t[j], t[i]
+    end
+end
+
 function pedFactory(controller, amount)
     local SKINS = { 22, 23, 24, 25, 26, 27, 28, 29, 30, 32, 33, 34, 35, 36, 37, 43, 44,
                     45, 46, 47, 48, 49, 50, 51, 52, 57, 58, 59, 60, 61,
@@ -46,11 +58,18 @@ function pedFactory(controller, amount)
     if #pathNodesGreen == 0 then
         return {}
     end
+    shuffle(pathNodesGreen)
 
     local result = {}
     for i = 1, available do
         local skin = SKINS[math.random(1, #SKINS)]
-        local node = pathNodesGreen[math.random(1, #pathNodesGreen)]
+
+        local node = nil 
+        if i <= #pathNodesGreen then
+            node = pathNodesGreen[i]
+        else
+            node = pathNodesGreen[math.random(1, #pathNodesGreen)]
+        end
 
         local ped = pedContainer:createPed(controller, skin, node)
         ped:setPosition(node:getPosition() + createRandomDelta(MIN_DISTANCE_TO_NODE))
@@ -62,9 +81,9 @@ function pedFactory(controller, amount)
 
             setTimer(
                 function() logic:remove() end,
-                 PED_DEATH_REMOVE, 
-                 1
-                )
+                PED_DEATH_REMOVE, 
+                1
+            )
         end)
     end
 
