@@ -1,15 +1,24 @@
 -- spawn point
 
+local debugMode = true
 local currentNode = nil
 
 -- set current node
 addCommandHandler('scn', function(cmd, id)
+    if not debugMode then
+        return false 
+    end
+
     id = tonumber(id)
     currentNode = PATH_LIST[id]
 end)
 
 -- spawn helper node
 addCommandHandler('sph', function()
+    if not debugMode then
+        return false 
+    end
+
     assert(currentNode ~= nil)
 
     local position = localPlayer.position
@@ -21,8 +30,16 @@ addCommandHandler('sph', function()
     table.insert(PATH_HELPER_LIST, helperNode)
 end)
 
+addCommandHandler('dbg', function()
+    debugMode = not debugMode
+end)
+
 -- spawn helper node in left and right side
 addCommandHandler('sphd', function()
+    if not debugMode then
+        return false 
+    end
+
     assert(currentNode ~= nil)
 
     local position = localPlayer.position
@@ -53,6 +70,10 @@ end)
 
 -- spawn node
 addCommandHandler('spn', function()
+    if not debugMode then
+        return false 
+    end
+
     local position = localPlayer.position
 
     local pathNode = PathNode(position.x, position.y, position.z)
@@ -66,6 +87,10 @@ end)
 
 -- spawn node with links
 addCommandHandler('spn2', function()
+    if not debugMode then
+        return false 
+    end
+
     assert(currentNode ~= nil)
 
     local position = localPlayer.position
@@ -114,6 +139,10 @@ end
 -- save all
 
 addCommandHandler('ss', function()
+    if not debugMode then
+        return false 
+    end
+
     local string = 'PATH_LIST = {\n'
     for _, pathNode in ipairs(PATH_LIST) do
         string = string .. '    ' .. pathNodeToString(pathNode) .. ',\n'
@@ -140,6 +169,10 @@ end)
 local RENDER_RADIUS = 100
 
 addEventHandler('onClientRender', root, function()
+    if not debugMode then
+        return false 
+    end
+
     local checkVariables = (function()
         return SPAWN_RED_RADIUS ~= nil
                 and SPAWN_GREEN_RADIUS ~= nil
@@ -248,6 +281,10 @@ addEventHandler('onClientRender', root, function()
 end)
 
 addEventHandler('onClientRender', root, function()
+    if not debugMode then
+        return false 
+    end
+
     if currentNode then
         
         local distance = (localPlayer.position - currentNode:getPosition()):getLength()
@@ -287,6 +324,10 @@ end)
 local DEBUG_SYNC_TIME = 250
 
 local function requestInformationFromServer()
+    if not debugMode then
+        return false 
+    end
+
     local peds = viewCollision:getElementsWithin('ped')
     triggerServerEvent('onPlayerDebugRequest', resourceRoot, peds)
 end
@@ -316,6 +357,10 @@ local function getClientDebugInfoString(ped)
 end
 
 addEventHandler('onClientRender', root, function()
+    if not debugMode then
+        return false 
+    end
+
     local Z_OFFSET = 0.7
 
     local peds = viewCollision:getElementsWithin('ped')
