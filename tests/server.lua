@@ -712,4 +712,19 @@ TESTS = {
         assert(getMinAngleSign(270, 45) == 1)      -- clockwise
         assert(getMinAngleSign(270, 180) == -1)    -- anti clockwise
     end,
+
+    -- rotatePointAroundPivot test
+    function()
+        -- https://www.desmos.com/calculator/0hljopqtx9
+        local point1 = rotatePointAroundPivot(Vector2(0,0), Vector2(0,4), math.pi/2)
+
+        assert(compareWithPrecision(point1.x, 4, 0.001) == true)
+        assert(compareWithPrecision(point1.y, 4, 0.001) == true)
+
+        -- https://www.desmos.com/calculator/jch4zt0nao
+        local point2 = rotatePointAroundPivot(Vector2(-2, 7), Vector2(0,4), -1.176)
+        
+        assert(compareWithPrecision(point2.x, 2, 0.001) == true)
+        assert(compareWithPrecision(point2.y, 7, 0.001) == true)
+    end,
 }

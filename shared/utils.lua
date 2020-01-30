@@ -52,3 +52,17 @@ function getMinAngleSign(startAngle, endAngle)
         return (clockwise < anticlockwise) and (1) or (-1)
     end
 end
+
+function rotatePointAroundPivot(point, pivot, rotation)
+    local distance = (pivot - point):getLength()
+
+    local originalAngle = getAngleBetweenPoints(pivot, point)
+    local angle = originalAngle + rotation
+    
+    local delta = Vector2(
+        distance * math.cos(angle),
+        distance * math.sin(angle)
+    )
+
+    return pivot + delta
+end
