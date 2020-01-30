@@ -35,7 +35,7 @@ addCommandHandler('dbg', function()
 end)
 
 -- spawn helper node in left and right side
-addCommandHandler('sphd', function()
+addCommandHandler('sphd', function(cmd, smth)
     if not debugMode then
         return false 
     end
@@ -54,6 +54,14 @@ addCommandHandler('sphd', function()
         Vector2(LENGTH * math.cos(angle - math.pi/2), LENGTH * math.sin(angle - math.pi/2)),
         Vector2(LENGTH * 2 * math.cos(angle - math.pi/2), LENGTH* 2 * math.sin(angle - math.pi/2)),
     }
+
+    if smth then
+        LENGTH = 0.9
+        deltaList = {
+            Vector2(LENGTH * math.cos(angle + math.pi/2), LENGTH * math.sin(angle + math.pi/2)),
+            Vector2(LENGTH * math.cos(angle - math.pi/2), LENGTH * math.sin(angle - math.pi/2)),
+        }
+    end
 
     for _, delta in pairs(deltaList) do 
         local helperNode = PathNode(
