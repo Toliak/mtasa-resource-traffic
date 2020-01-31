@@ -37,8 +37,6 @@ local function createRandomPed(position)
 end
 
 function pedFactory(controller, amount)
-    
-
     local available = MAX_PEDS - pedContainer:getLength(controller)
     available = math.min(available, amount)
 
