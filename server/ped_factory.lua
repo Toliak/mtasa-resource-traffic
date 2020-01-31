@@ -23,12 +23,21 @@ local function randomSpawnNode(sourceNode)
     return nodes[math.random(1, #nodes)]
 end
 
+local function createRandomPed(position)
+    local PED_DATA = { 
+        {35, 118},
+        {43, 118},
+        {46, 118},
+    }
+    local data = PED_DATA[math.random(1, #PED_DATA)]
+
+    local ped = Ped(data[1], position)
+    ped:setWalkingStyle(data[2])
+    return ped
+end
+
 function pedFactory(controller, amount)
-    local SKINS = { 22, 23, 24, 25, 26, 27, 28, 29, 30, 32, 33, 34, 35, 36, 37, 43, 44,
-                    45, 46, 47, 48, 49, 50, 51, 52, 57, 58, 59, 60, 61,
-                    63, 64, 69, 75, 76, 77, 85, 87, 88, 89, 90, 91, 92,
-                    93, 129, 130, 131, 138, 139, 140, 141, 145, 148, 150,
-                    151, 152, 157 }
+    
 
     local available = MAX_PEDS - pedContainer:getLength(controller)
     available = math.min(available, amount)
@@ -67,8 +76,6 @@ function pedFactory(controller, amount)
 
     local result = {}
     for i = 1, available do
-        local skin = SKINS[math.random(1, #SKINS)]
-
         local node = nil 
         if i <= #pathNodesGreen then
             node = pathNodesGreen[i]
@@ -77,8 +84,11 @@ function pedFactory(controller, amount)
         end
         local spawnNode = randomSpawnNode(node)
 
-        local ped = pedContainer:createPed(controller, skin, node)
-        ped:setPosition(spawnNode:getPosition())
+        local ped = createRandomPed(spawnNode:getPosition())
+
+        pedContainer:append(controller, ped)
+        pedContainer:setData(ped, 'nextNodeId', node.id)
+
         result[ped] = pedContainer:getAllData(ped)
 
         local logic = PedLogic(ped, pedContainer)
