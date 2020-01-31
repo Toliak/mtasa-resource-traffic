@@ -6,11 +6,11 @@ addEventHandler('onClientResourceStart', resourceRoot, function()
 end)
 
 addEventHandler('onClientPedWasted', root, function()
-    PedLogic(source, pedContainer):onWasted()
+    getPedLogic(source, pedContainer):onWasted()
 end)
 
 addSharedEventHandler('onClientPedWastedShit', resourceRoot, function(ped)
-    PedLogic(ped, pedContainer):onWasted()
+    getPedLogic(ped, pedContainer):onWasted()
 end)
 
 -- @param table control-state
@@ -22,9 +22,9 @@ local function setPedControlStateShared(ped, stateTable)
 end
 
 function checkPedKeys()
-    local pedList = pedContainer:toList()
-    for _, ped in pairs(pedList) do
-        local logic = PedLogic(ped, pedContainer)
+    local peds = pedContainer._table
+    for ped, _ in pairs(peds) do
+        local logic = getPedLogic(ped, pedContainer)
 
         logic:updateRotationTo()
 
@@ -37,7 +37,7 @@ setTimer(checkPedKeys, CHECK_TIME_PED_KEYS, 0)
 function checkPedRotation(msec)
     local pedList = viewCollision:getElementsWithin('ped')
     for _, ped in pairs(pedList) do
-        local logic = PedLogic(ped, pedContainer)
+        local logic = getPedLogic(ped, pedContainer)
         
         logic:checkAndSetSpawnRotation()
         logic:checkAndUpdateRotation(msec)
@@ -46,9 +46,9 @@ end
 addEventHandler('onClientPreRender', root, checkPedRotation)
 
 function checkPedState()
-    local pedList = pedContainer:toList()
-    for _, ped in pairs(pedList) do
-        local logic = PedLogic(ped, pedContainer)
+    local peds = pedContainer._table
+    for ped, _ in pairs(peds) do
+        local logic = getPedLogic(ped, pedContainer)
 
         logic:checkAndUpdateNextNode()
         logic:updateNextNodeHelper()

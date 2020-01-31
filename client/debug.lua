@@ -407,7 +407,7 @@ addEventHandler('onClientRender', root, function()
     for ped, _ in pairs(peds) do
         local bonePosition = ped:getBonePosition(8)
         
-        local logic = PedLogic(ped, pedContainer)
+        local logic = getPedLogic(ped, pedContainer)
         local helperNode = logic:getNextHelperNode() or logic:getNextNode()
         if helperNode then
             dxDrawLine3D(

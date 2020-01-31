@@ -1,6 +1,6 @@
 local customData = {}
 
-local PedLogicClass = {
+local PedLogicWalkClass = {
     _ped = nil,
     _pedContainer = nil,
 
@@ -405,9 +405,9 @@ local PedLogicClass = {
     end,
 }
 
-function PedLogic(ped, pedContainer)
+function PedLogicWalk(ped, pedContainer)
     local object = setmetatable({}, {
-        __index = PedLogicClass,
+        __index = PedLogicWalkClass,
     })
 
     object._ped = ped

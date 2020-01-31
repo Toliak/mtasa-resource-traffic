@@ -42,8 +42,9 @@
     <!-- Client-side -->
 
     <script type="client" cache="false" src="client/debug.lua" />
+    <script type="client" cache="false" src="client/ped_logic_factory.lua" />
     <script type="client" cache="false" src="client/ped_container.lua" />
-    <script type="client" cache="false" src="client/ped_logic.lua" />
+    <script type="client" cache="false" src="client/ped_logic/walk.lua" />
     <script type="client" cache="false" src="client/utils.lua" />
     <script type="client" cache="false" src="client/core.lua" />
     <script type="client" cache="false" src="client/sync.lua" />
