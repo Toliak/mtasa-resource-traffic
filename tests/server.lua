@@ -727,4 +727,14 @@ TESTS = {
         assert(compareWithPrecision(point2.x, 2, 0.001) == true)
         assert(compareWithPrecision(point2.y, 7, 0.001) == true)
     end,
+
+    -- mergeDicts test
+    function()
+        local result = mergeDicts({a=1}, {b=2, c=3}, {d=9})
+
+        assert(result['a'] == 1)
+        assert(result['b'] == 2)
+        assert(result['c'] == 3)
+        assert(result['d'] == 9)
+    end,
 }

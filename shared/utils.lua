@@ -66,3 +66,15 @@ function rotatePointAroundPivot(point, pivot, rotation)
 
     return pivot + delta
 end
+
+function mergeDicts(...)
+    local result = {}
+
+    for _, dict in ipairs({...}) do
+        for key, value in pairs(dict) do
+            result[key] = value
+        end
+    end
+
+    return result
+end
