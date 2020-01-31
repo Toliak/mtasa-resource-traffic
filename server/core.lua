@@ -11,34 +11,37 @@ addSharedEventHandler('onPedRequest', resourceRoot, function(amount_)
     coroutine.resume(task, client, amount_)
 end)
 
--- When ped is no longer needed by client
-addSharedEventHandler('onPedRelease', resourceRoot, function(pedDict_)
-    local task = coroutine.create(function(player, pedDict)
-        for ped, dataTable in pairs(pedDict) do
-            local newController = getPedStreamablePlayer(ped, SPAWN_RED_RADIUS, player)
-            if newController == nil then
-                pedContainer:destroy(player, ped)
+local function releasePeds(player, pedDict)
+    for ped, dataTable in pairs(pedDict) do
+        local newController = getPedStreamablePlayer(ped, SPAWN_RED_RADIUS, player)
+        if newController == nil then
+            pedContainer:destroy(player, ped)
 
-            else
-                -- Update data
-
+        else
+            -- Update data
+            
+            if type(dataTable) == 'table' then
                 for key, value in pairs(dataTable) do
                     pedContainer:setData(ped, key, value)
                 end
-
-                -- New controller
-
-                pedContainer:changePedController(player, ped, newController)
-                triggerClientEvent(
-                        newController,
-                        'onClientPedRequestAnswer',
-                        resourceRoot,
-                        { [ped] = pedContainer:getAllData(ped) }
-                )
             end
 
+            -- New controller
+
+            pedContainer:changePedController(player, ped, newController)
+            triggerClientEvent(
+                    newController,
+                    'onClientPedRequestAnswer',
+                    resourceRoot,
+                    { [ped] = pedContainer:getAllData(ped) }
+            )
         end
-    end)
+    end
+end
+
+-- When ped is no longer needed by client
+addSharedEventHandler('onPedRelease', resourceRoot, function(pedDict_)
+    local task = coroutine.create(releasePeds)
     coroutine.resume(task, client, pedDict_)
 end)
 
@@ -69,4 +72,15 @@ addSharedEventHandler('onPedDamageShit', resourceRoot, function (ped, weapon, bo
         triggerEvent('onPedWasted', ped, 0, client, weapon, bodypart)
         triggerClientEvent(ped:getSyncer(), 'onClientPedWastedShit', resourceRoot, ped)
     end
+end)
+
+addEventHandler('onPlayerQuit', root, function()
+    local dict = pedContainer._table[source]
+
+    if not dict then
+        return
+    end
+    
+    local task = coroutine.create(releasePeds)
+    coroutine.resume(task, source, dict)
 end)
