@@ -249,6 +249,7 @@ local PedLogicClass = {
         if type(waiting) == 'number' and getTickCount() < waiting then
             return false
         end
+        
         local walking = self._ped:getData('goesAroundTime')
         if type(walking) == 'number' and getTickCount() < walking then
             return false
@@ -257,20 +258,21 @@ local PedLogicClass = {
         if (not self:checkFrontSight()) then
             self._ped:setData('goesAround', 'back')
             self:checkAndUpdateWait(PED_WAIT_TIME)
-            self:checkAndUpdateGoAroundTime(PED_GO_AROUND_TIME)
+            self:checkAndUpdateGoAroundTime(PED_GO_AROUND_TIME + PED_WAIT_TIME)
 
         elseif (not self:checkLeftSight()) then
             self._ped:setData('goesAround', 'right')
             self:checkAndUpdateWait(PED_WAIT_TIME)
-            self:checkAndUpdateGoAroundTime(PED_GO_AROUND_TIME)
+            self:checkAndUpdateGoAroundTime(PED_GO_AROUND_TIME + PED_WAIT_TIME)
 
         elseif (not self:checkRightSight()) then
             self._ped:setData('goesAround', 'left')
             self:checkAndUpdateWait(PED_WAIT_TIME)
-            self:checkAndUpdateGoAroundTime(PED_GO_AROUND_TIME)
+            self:checkAndUpdateGoAroundTime(PED_GO_AROUND_TIME + PED_WAIT_TIME)
 
         else
             self._ped:setData('goesAround', false)
+            self._ped:setData('goesAroundTime', false)
             self._ped:setData('waiting', false)
         end
     end,

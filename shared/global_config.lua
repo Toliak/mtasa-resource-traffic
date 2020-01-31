@@ -10,7 +10,7 @@ CHECK_TIME_PED_STATE = 100
 
 PED_ROTATION_SPEED = 200           -- deg per second
 PED_WAIT_TIME = 500
-PED_GO_AROUND_TIME = 1000
+PED_GO_AROUND_TIME = 600
 PED_DEATH_REMOVE = 1500             -- remove ped after death
 
 MIN_DISTANCE_TO_NODE = 2

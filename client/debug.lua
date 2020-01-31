@@ -361,6 +361,7 @@ local function getClientDebugInfoString(ped)
     message = message .. ('#FFFFFFspawnRotation: %s\n'):format(ped:getData('spawnRotation') or 'NIL')
     message = message .. ('#FFFFFFHP: %s\n'):format(ped:getHealth())
     message = message .. ('#FFFFFFgoesAround: %s\n'):format(ped:getData('goesAround') or 'FALSE')
+    message = message .. ('#FFFFFFgoesAroundTime: %s\n'):format(ped:getData('goesAroundTime') or 'FALSE')
     message = message .. ('#FFFFFFwaiting: %s\n'):format(ped:getData('waiting') or 'NIL')
 
     return message
