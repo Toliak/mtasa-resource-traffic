@@ -24,14 +24,11 @@ end
 function checkPedKeys()
     local pedList = pedContainer:toList()
     for _, ped in pairs(pedList) do
-
         local logic = PedLogic(ped, pedContainer)
 
-        logic:checkAndUpdateSight()
         logic:updateRotationTo()
 
         local states = logic:getControlStates()
-
         setPedControlStateShared(ped, states)
     end
 end
@@ -55,6 +52,8 @@ function checkPedState()
 
         logic:checkAndUpdateNextNode()
         logic:updateNextNodeHelper()
+
+        logic:checkAndUpdateSight()
     end
 end
 setTimer(checkPedState, CHECK_TIME_PED_STATE, 0)

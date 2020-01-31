@@ -161,6 +161,10 @@ local PedLogicClass = {
 
     _checkSight = function(self, angleDelta)
         local rotation = self._ped:getRotation().z
+        if getPedControlState(self._ped, 'backwards') then
+            rotation = rotation - 180
+        end
+
         local angle = math.rad(rotation + 90)
 
         local LENGTH = 2
@@ -228,25 +232,42 @@ local PedLogicClass = {
         self._ped:setData('waiting', getTickCount() + waitTime)
     end,
 
+    checkAndUpdateGoAroundTime = function(self, time)
+        if self._ped:getData('goesAroundTime') then
+            if getTickCount() < self._ped:getData('goesAroundTime') then
+                return false
+            else
+                return true
+            end
+        end
+
+        self._ped:setData('goesAroundTime', getTickCount() + time)
+    end,
+
     checkAndUpdateSight = function(self)
         local waiting = self._ped:getData('waiting')
         if type(waiting) == 'number' and getTickCount() < waiting then
             return false
         end
-
-        local WAIT_TIME = 500
+        local walking = self._ped:getData('goesAroundTime')
+        if type(walking) == 'number' and getTickCount() < walking then
+            return false
+        end
 
         if (not self:checkFrontSight()) then
             self._ped:setData('goesAround', 'back')
-            self:checkAndUpdateWait(WAIT_TIME)
+            self:checkAndUpdateWait(PED_WAIT_TIME)
+            self:checkAndUpdateGoAroundTime(PED_GO_AROUND_TIME)
 
         elseif (not self:checkLeftSight()) then
             self._ped:setData('goesAround', 'right')
-            self:checkAndUpdateWait(WAIT_TIME)
+            self:checkAndUpdateWait(PED_WAIT_TIME)
+            self:checkAndUpdateGoAroundTime(PED_GO_AROUND_TIME)
 
         elseif (not self:checkRightSight()) then
             self._ped:setData('goesAround', 'left')
-            self:checkAndUpdateWait(WAIT_TIME)
+            self:checkAndUpdateWait(PED_WAIT_TIME)
+            self:checkAndUpdateGoAroundTime(PED_GO_AROUND_TIME)
 
         else
             self._ped:setData('goesAround', false)

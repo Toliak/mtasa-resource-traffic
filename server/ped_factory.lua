@@ -1,11 +1,3 @@
-local function createRandomDelta(radius)
-    return Vector3(
-        math.random() * 2 * radius - radius, 
-        math.random() * 2 * radius - radius,
-        0
-    )
-end
-
 local function shuffle(t)
     local rand = math.random 
     assert(t, "table.shuffle() expected a table, got nil")
@@ -16,6 +8,19 @@ local function shuffle(t)
         j = rand(i)
         t[i], t[j] = t[j], t[i]
     end
+end
+
+local function randomSpawnNode(sourceNode)
+    local nodes = {sourceNode,}
+
+    local helperIds = sourceNode:getLink('helper')
+    if helperIds and #helperIds ~= 0 then
+        for _, id in pairs(helperIds) do
+            table.insert(nodes, PATH_HELPER_LIST[id])
+        end
+    end
+
+    return nodes[math.random(1, #nodes)]
 end
 
 function pedFactory(controller, amount)
@@ -70,9 +75,10 @@ function pedFactory(controller, amount)
         else
             node = pathNodesGreen[math.random(1, #pathNodesGreen)]
         end
+        local spawnNode = randomSpawnNode(node)
 
         local ped = pedContainer:createPed(controller, skin, node)
-        ped:setPosition(node:getPosition() + createRandomDelta(MIN_DISTANCE_TO_NODE))
+        ped:setPosition(spawnNode:getPosition())
         result[ped] = pedContainer:getAllData(ped)
 
         local logic = PedLogic(ped, pedContainer)
