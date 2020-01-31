@@ -1,6 +1,6 @@
-local customData = {}
+customData = {}
 
-local PedLogicWalkClass = {
+PedLogicWalkClass = {
     _ped = nil,
     _pedContainer = nil,
 
@@ -377,18 +377,21 @@ local PedLogicWalkClass = {
         end
     end,
 
-    getControlStates = function(self)
-        local result = {}
-
-        local default = { 
+    getControlStatesDefault = function(self)
+        return { 
             walk = true,
             forwards = false,
             backwards = false,
             right = false,
             left = false,
         }
+    end,
+
+    getControlStates = function(self)
+        local result = {}
+
         result = mergeDicts(
-            default,
+            self:getControlStatesDefault(),
              self:getControlStatesForward(),
              self:getControlStatesSight()
             )

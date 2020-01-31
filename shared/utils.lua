@@ -78,3 +78,11 @@ function mergeDicts(...)
 
     return result
 end
+
+function classCopy(original)
+    local result = {}
+    for key, value in pairs(original) do
+        result[key] = value
+    end
+    return result
+end

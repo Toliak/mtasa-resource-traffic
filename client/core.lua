@@ -76,3 +76,13 @@ addEventHandler('onClientPedDamage', root, function(attacker, weapon, bodypart, 
     triggerServerEvent('onPedDamageShit', resourceRoot, source, weapon, bodypart, loss)
     cancelEvent()
 end)
+
+addEventHandler('onClientPedDamage', root, function(attacker, weapon, bodypart, loss)
+    if attacker ~= localPlayer then
+        return
+    end
+
+    if (not source:getData('logic')) or source:getData('logic') == 'walk' then
+        source:setData('logic', 'run')
+    end
+end)
