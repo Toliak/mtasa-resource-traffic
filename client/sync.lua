@@ -7,7 +7,7 @@ addSharedEventHandler('onClientPedRequestAnswer', resourceRoot, function(pedDict
         end
 
         local logic = PedLogic(ped, pedContainer)
-        logic:updateDirection()
+        logic:checkAndUpdateDirection()
         logic:updateNextNode()
         logic:updateNextNodeHelper()
         logic:updateRotationTo(true)
