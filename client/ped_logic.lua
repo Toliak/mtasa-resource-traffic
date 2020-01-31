@@ -19,12 +19,17 @@ local PedLogicClass = {
     end,
 
     -- can ped be rotated
-    canPedBeRotated = function(self)
+    canBeRotated = function(self)
         if self._ped:isDead() or not self._ped:isOnGround() then
             return false
         end
 
         if self._ped:getData('goesAround') then
+            return false
+        end
+
+        local waiting = self._ped:getData('waiting')
+        if type(waiting) == 'number' and getTickCount() < waiting then
             return false
         end
 
@@ -114,7 +119,7 @@ local PedLogicClass = {
     end,
 
     checkAndSetSpawnRotation = function(self)
-        if not self:canPedBeRotated() then
+        if not self:canBeRotated() then
             return
         end
 
@@ -133,7 +138,7 @@ local PedLogicClass = {
     end,
 
     checkAndUpdateRotation = function(self, msec)
-        if not self:canPedBeRotated() then
+        if not self:canBeRotated() then
             return
         end
 
@@ -200,15 +205,53 @@ local PedLogicClass = {
     end,
 
     checkLeftSight = function(self)
-        return self:_checkSight(math.rad(35))
+        return self:_checkSight(math.rad(40))
     end,
 
     checkRightSight = function(self)
-        return self:_checkSight(math.rad(-35))
+        return self:_checkSight(math.rad(-40))
     end,
 
     checkFrontSight = function(self)
         return self:_checkSight(0)
+    end,
+
+    checkAndUpdateWait = function(self, waitTime)
+        if self._ped:getData('waiting') then
+            if getTickCount() < self._ped:getData('waiting') then
+                return false
+            else
+                return true
+            end
+        end
+
+        self._ped:setData('waiting', getTickCount() + waitTime)
+    end,
+
+    checkAndUpdateSight = function(self)
+        local waiting = self._ped:getData('waiting')
+        if type(waiting) == 'number' and getTickCount() < waiting then
+            return false
+        end
+
+        local WAIT_TIME = 500
+
+        if (not self:checkFrontSight()) then
+            self._ped:setData('goesAround', 'back')
+            self:checkAndUpdateWait(WAIT_TIME)
+
+        elseif (not self:checkLeftSight()) then
+            self._ped:setData('goesAround', 'right')
+            self:checkAndUpdateWait(WAIT_TIME)
+
+        elseif (not self:checkRightSight()) then
+            self._ped:setData('goesAround', 'left')
+            self:checkAndUpdateWait(WAIT_TIME)
+
+        else
+            self._ped:setData('goesAround', false)
+            self._ped:setData('waiting', false)
+        end
     end,
 
     updateNextNodeHelper = function(self)
@@ -257,6 +300,77 @@ local PedLogicClass = {
         end
         
         self._pedContainer:setData(self._ped, 'helperNodeId', minNode.id)
+    end,
+
+    canGoForward = function(self)
+        if self._ped:getData('goesAround') then
+            return false
+        end
+
+        local waiting = self._ped:getData('waiting')
+        if type(waiting) == 'number' and getTickCount() < waiting then
+            return false
+        end
+
+        return true
+    end,
+
+    canGoAround = function(self)
+        if not self._ped:getData('goesAround') then
+            return false
+        end
+
+        local waiting = self._ped:getData('waiting')
+        if type(waiting) == 'number' and getTickCount() < waiting then
+            return false
+        end
+
+        return true
+    end,
+
+    getControlStatesForward = function(self)
+        if self:canGoForward() then
+            return {
+                forwards = true
+            }
+        end
+
+        return {
+            forwards = false
+        }
+    end,
+
+    getControlStatesSight = function(self)
+        if not self:canGoAround() then
+            return {}
+        end
+
+        if self._ped:getData('goesAround') == 'left' then
+            return { left = true }
+        elseif self._ped:getData('goesAround') == 'right' then
+            return { right = true }
+        elseif self._ped:getData('goesAround') == 'back' then
+            return { backwards = true }
+        end
+    end,
+
+    getControlStates = function(self)
+        local result = {}
+
+        local default = { 
+            walk = true,
+            forwards = false,
+            backwards = false,
+            right = false,
+            left = false,
+        }
+        result = mergeDicts(
+            default,
+             self:getControlStatesForward(),
+             self:getControlStatesSight()
+            )
+        
+        return result
     end,
 
     onWasted = function(self)

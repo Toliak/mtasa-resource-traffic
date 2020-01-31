@@ -21,59 +21,16 @@ local function setPedControlStateShared(ped, stateTable)
     triggerServerEvent('onPedSetControlState', resourceRoot, ped, stateTable)
 end
 
-function checkSpawn()
-    -- spawn peds
-    if pedContainer:getLength() < MAX_PEDS then
-        triggerServerEvent('onPedRequest', resourceRoot, MAX_PEDS_PER_SPAWN)
-    end
-end
-setTimer(checkSpawn, CHECK_TIME_SPAWN, 0)
-
-function checkRelease()
-    -- release far peds
-    local toRemove = pedContainer:removeIfNotInSphere(localPlayer.position, SPAWN_GREEN_RADIUS)
-    if #toRemove > 0 then
-        local dict = {}
-        for _, ped in pairs(toRemove) do
-            dict[ped] = pedContainer:getAllData(ped)
-
-            pedContainer:clearData(ped)
-        end
-
-        triggerServerEvent('onPedRelease', resourceRoot, dict)
-    end
-end
-setTimer(checkRelease, CHECK_TIME_RELEASE, 0)
-
 function checkPedKeys()
     local pedList = pedContainer:toList()
     for _, ped in pairs(pedList) do
 
         local logic = PedLogic(ped, pedContainer)
 
+        logic:checkAndUpdateSight()
         logic:updateRotationTo()
 
-        local states = {
-            forwards = true,
-            backwards = false,
-            left = false,
-            right = false,
-            walk = true,
-        }
-
-        if (not logic:checkLeftSight()) then
-            states.left = false
-            states.right = true
-            ped:setData('goesAround', true)
-        elseif (not logic:checkRightSight()) or (not logic:checkFrontSight()) then
-            states.left = true
-            states.right = false
-            ped:setData('goesAround', true)
-        else
-            states.left = false
-            states.right = false
-            ped:setData('goesAround', false)
-        end
+        local states = logic:getControlStates()
 
         setPedControlStateShared(ped, states)
     end
