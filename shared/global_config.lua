@@ -1,7 +1,7 @@
 SPAWN_RED_RADIUS = 30
 SPAWN_GREEN_RADIUS = 55
 
-MAX_PEDS = 1
+MAX_PEDS = 16
 MAX_PEDS_PER_SPAWN = 2
 CHECK_TIME_SPAWN = 200
 CHECK_TIME_RELEASE = 900
@@ -19,9 +19,9 @@ PED_AIM_DISTANCE = 100              -- constant aim distance
 PED_MIN_ATTACK_DISTANCE = {
     [0] = 1,
     [1] = 1,
-    [22] = 10,
-    [31] = 25,
-    [25] = 12,
+    [22] = 8,
+    [31] = 15,
+    [25] = 10,
 }
 
 

@@ -90,9 +90,14 @@ function pedFactory(controller, amount)
         -- DEBUG
         ped:setData('logic', 'attack')
         pedContainer:setData(ped, 'attackTarget', controller)
-        ped:setStat(72, 1000)
-        ped:setStat(78, 1000)
-        ped:giveWeapon(31, 9999, true)
+        
+        if math.random() > 0.8 then
+            ped:giveWeapon(31, 9999, true)
+        elseif math.random() > 0.5 then
+            ped:giveWeapon(25, 9999, true)
+        elseif math.random() > 0.3 then
+            ped:giveWeapon(22, 9999, true)
+        end
 
 
         result[ped] = pedContainer:getAllData(ped)
