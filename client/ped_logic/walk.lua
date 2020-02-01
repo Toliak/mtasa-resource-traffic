@@ -103,19 +103,32 @@ PedLogicWalkClass = {
         return newDirection
     end,
 
-    updateRotationTo = function(self, isSpawnRotation)
+    updateRotation = function(self, isSpawnRotation)
         local node = self:getNextHelperNode() or self:getNextNode()
         local angle = getAngleBetweenPoints(self._ped:getPosition(), node:getPosition())
         local rotation = getNormalAngle(math.deg(angle) - 90)
 
-        self._ped:setData('rotateTo', rotation, true)
+        self._ped:setCameraRotation(- rotation)
+        self._ped:setData('rotation', rotation, true)
 
         if isSpawnRotation then
             customData[self._ped].isSpawnRotationAvailable = true
             self._ped:setData('spawnRotation', rotation, true)
         end
+    end,
 
-        return rotation
+    -- update remote ped camera rotation
+    checkAndUpdateRotation = function(self)
+        if self._pedContainer:isPedInContainer(self._ped) then
+            return false
+        end
+
+        local rotation = self._ped:getData('rotation')
+        if type(rotation) ~= 'number' then
+            return false
+        end
+
+        self._ped:setCameraRotation(- rotation)
     end,
 
     checkAndSetSpawnRotation = function(self)
@@ -135,28 +148,6 @@ PedLogicWalkClass = {
 
         self._ped:setRotation(Vector3(0, 0, spawnRotation))
         customData[self._ped].isSpawnRotationAvailable = false
-    end,
-
-    checkAndUpdateRotation = function(self, msec)
-        if not self:canBeRotated() then
-            return
-        end
-
-        local rotateTo = self._ped:getData('rotateTo')
-        if rotateTo == false then
-            return
-        end
-
-        if self._ped:getRotation().z ~= rotateTo and compareWithPrecision(self._ped:getRotation().z, rotateTo, 15) then
-            self._ped:setRotation(Vector3(0, 0, rotateTo))
-
-        elseif self._ped:getRotation().z ~= rotateTo then
-            local rotation = self._ped:getRotation().z
-
-            self._ped:setRotation(
-                Vector3(0, 0, rotation + PED_ROTATION_SPEED * msec / 1000 * getMinAngleSign(rotation, rotateTo)))
-        end
-
     end,
 
     _checkSight = function(self, angleDelta)
@@ -181,7 +172,7 @@ PedLogicWalkClass = {
                 0
                 )
 
-            local hit, hitX, hitY, hitZ = processLineOfSight(
+            local hit, hitX, hitY, hitZ, hitElement = processLineOfSight(
                 startPoint, 
                 endPoint,
                 true,       -- checkBuildings
@@ -199,12 +190,12 @@ PedLogicWalkClass = {
                 local distance = (Vector3(hitX, hitY, hitZ) - startPoint):getLength()
 
                 if distance <= CRITICAL_DISTANCE then
-                    return false
+                    return hitElement or true
                 end
             end
         end
 
-        return true
+        return false
     end,
 
     checkLeftSight = function(self)
@@ -254,17 +245,17 @@ PedLogicWalkClass = {
             return false
         end
 
-        if (not self:checkFrontSight()) then
+        if self:checkFrontSight() then
             self._ped:setData('goesAround', 'back')
             self:checkAndUpdateWait(PED_WAIT_TIME)
             self:checkAndUpdateGoAroundTime(PED_GO_AROUND_TIME + PED_WAIT_TIME)
 
-        elseif (not self:checkLeftSight()) then
+        elseif self:checkLeftSight() then
             self._ped:setData('goesAround', 'right')
             self:checkAndUpdateWait(PED_WAIT_TIME)
             self:checkAndUpdateGoAroundTime(PED_GO_AROUND_TIME + PED_WAIT_TIME)
 
-        elseif (not self:checkRightSight()) then
+        elseif self:checkRightSight() then
             self._ped:setData('goesAround', 'left')
             self:checkAndUpdateWait(PED_WAIT_TIME)
             self:checkAndUpdateGoAroundTime(PED_GO_AROUND_TIME + PED_WAIT_TIME)
@@ -397,6 +388,8 @@ PedLogicWalkClass = {
         
         return result
     end,
+
+    checkAndUpdateTarget = function(self) end,
 
     onWasted = function(self)
         if not self._pedContainer:isPedInContainer(self._ped) then

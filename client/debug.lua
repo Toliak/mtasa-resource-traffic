@@ -1,6 +1,6 @@
 -- spawn point
 
-local debugMode = true
+local debugMode = false
 local currentNode = nil
 
 -- set current node
@@ -351,12 +351,10 @@ end)
 local function getClientDebugInfoString(ped)
     local distance = (ped:getPosition() - localPlayer:getPosition()):getLength()
     local zone = (distance <= SPAWN_RED_RADIUS) and '#ff0000red' or '#00ff00green'
-    local rotateTo = ped:getData('rotateTo') or 'NIL'
     local rotation = ped:getRotation().z
 
     local message = ''
     message = message .. ('#FFFFFFzone: %s\n'):format(zone)
-    message = message .. ('#FFFFFFrotateTo: %s\n'):format(rotateTo)
     message = message .. ('#FFFFFFrotation: %s\n'):format(rotation)
     message = message .. ('#FFFFFFspawnRotation: %s\n'):format(ped:getData('spawnRotation') or 'NIL')
     message = message .. ('#FFFFFFHP: %s\n'):format(ped:getHealth())
@@ -403,6 +401,8 @@ addEventHandler('onClientRender', root, function()
         return
     end
 
+    localPlayer:setHealth(100)
+
     local peds = pedContainer._table
     for ped, _ in pairs(peds) do
         local bonePosition = ped:getBonePosition(8)
@@ -424,51 +424,46 @@ addEventHandler('onClientRender', root, function()
                     4                        -- width
             )
         end
+
+
+        -- target
+        if customData[ped] then
+            local targetPivot = customData[ped]['targetPivot']
+
+            if targetPivot then
+                dxDrawLine3D(
+                        bonePosition,
+                        targetPivot,
+                        0x55801D15,
+                        2                        -- width
+                )
+            end
+        end
     end
 end)
-
-
-local function debugSightLocalPlayer(angleDelta)
-    local rotation = localPlayer:getRotation().z
-    if getPedControlState(localPlayer, 'backwards') then
-        rotation = rotation - 180
-    end
-
-    local angle = math.rad(rotation + 90)
-
-    local LENGTH = 4
-    local SIGHT_Z_OFFSET = {-0.6, 0.2}
-    local CRITICAL_DISTANCE = 1
-
-    for _, z in pairs(SIGHT_Z_OFFSET) do
-        local currentAngle = angle + angleDelta
-
-        local startPoint = localPlayer:getPosition() + Vector3(0,0,z)
-        local endPoint = startPoint + Vector3(
-            LENGTH * math.cos(currentAngle),
-            LENGTH * math.sin(currentAngle),
-            0
-            )
-
-        dxDrawLine3D(
-            startPoint,
-            endPoint,
-            0x33FFFFFF,
-            2
-        )
-    end
-end
 
 addEventHandler('onClientRender', root, function()
     if not debugMode then
         return
     end
 
+    local peds = viewCollision:getElementsWithin('ped')
+    for _, ped in pairs(peds) do
+        local x, y, z = getPedTargetStart(ped) -- Gets the Point to start From
+        local sx, sy, sz = getPedTargetEnd(ped) -- Gets the Point where the Target Ends
 
-    debugSightLocalPlayer(math.rad(60))
-    debugSightLocalPlayer(math.rad(-60))
-    debugSightLocalPlayer(math.rad(25))
-    debugSightLocalPlayer(math.rad(-25))
-    debugSightLocalPlayer(0)
+        if x==x and y==y and z==z and sx==sx and sy==sy and sz==sz then
+            dxDrawLine3D(
+                    x,
+                    y, 
+                    z, 
+                    sx, 
+                    sy, 
+                    sz,
+                    0x88236467
+                ) -- Draws the Line
+        end
+    end
 end)
+
 
