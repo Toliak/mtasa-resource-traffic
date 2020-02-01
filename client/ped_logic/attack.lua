@@ -31,20 +31,10 @@ PedLogicAttackClass.getTargetPivotPosition = function(self, target)
     return originalPosition + Vector3(velocityDelta.x, velocityDelta.y, 0)
 end
 
-PedLogicAttackClass.checkAndUpdateRotation = function(self, msec)
-    local result = PedLogicWalkClass.checkAndUpdateRotation(self, msec)
-    if not result then
-        return false
-    end
-
+PedLogicAttackClass.checkAndUpdateTarget = function(self)
     local target = self._pedContainer:getData(self._ped, 'attackTarget')
     if not isElement(target) then
         return
-    end
-
-    if not self:canAttack() then
-        -- fast
-        self._ped:setAimTarget(target:getPosition())
     end
     
     local pivot = self:getTargetPivotPosition(target)

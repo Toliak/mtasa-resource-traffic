@@ -45,6 +45,16 @@ function checkPedRotation(msec)
 end
 addEventHandler('onClientPreRender', root, checkPedRotation)
 
+function checkPedTarget(msec)
+    local peds = pedContainer._table
+    for ped, _ in pairs(peds) do
+        local logic = getPedLogic(ped, pedContainer)
+
+        logic:checkAndUpdateTarget()
+    end
+end
+addEventHandler('onClientRender', root, checkPedTarget)
+
 function checkPedState()
     local peds = pedContainer._table
     for ped, _ in pairs(peds) do

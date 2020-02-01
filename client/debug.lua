@@ -443,15 +443,14 @@ addEventHandler('onClientRender', root, function()
             local sx, sy, sz = getPedTargetEnd(ped) -- Gets the Point where the Target Ends
 
             dxDrawLine3D(
-                x,
-             y, 
-             z, 
-             sx, 
-             sy, 
-             sz
-            ) -- Draws the Line
-
-            iprint(getPedTarget(ped), getPedCameraRotation(ped))
+                    x,
+                y, 
+                z, 
+                sx, 
+                sy, 
+                sz,
+                0x88236467
+                ) -- Draws the Line
         end
     end
 end)

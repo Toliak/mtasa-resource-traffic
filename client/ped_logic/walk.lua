@@ -399,6 +399,8 @@ PedLogicWalkClass = {
         return result
     end,
 
+    checkAndUpdateTarget = function(self) end,
+
     onWasted = function(self)
         if not self._pedContainer:isPedInContainer(self._ped) then
             return
