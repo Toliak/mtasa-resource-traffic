@@ -1,6 +1,6 @@
 PedLogicAttackClass = classCopy(PedLogicWalkClass)
 
-PedLogicAttackClass.updateRotationToTarget = function(self, target)
+PedLogicAttackClass.updateRotationTarget = function(self, target)
     local target = self._ped:getData('attackTarget')
     if not isElement(target) then
         return
@@ -9,16 +9,17 @@ PedLogicAttackClass.updateRotationToTarget = function(self, target)
     local angle = getAngleBetweenPoints(self._ped:getPosition(), target:getPosition())
     local rotation = getNormalAngle(math.deg(angle) - 90)
     
-    self._ped:setData('rotateTo', rotation, true)
+    self._ped:setCameraRotation(- rotation)
+    self._ped:setData('rotation', rotation)
 end
 
-PedLogicAttackClass.updateRotationTo = function(self)
+PedLogicAttackClass.updateRotation = function(self)
     local target = self._ped:getData('attackTarget')
     if not isElement(target) then
-        return PedLogicWalkClass.updateRotationTo(self)
+        return PedLogicWalkClass.updateRotation(self)
     end
 
-    return self:updateRotationToTarget(target)
+    return self:updateRotationTarget(target)
 end
 
 PedLogicAttackClass.getTargetPivotPosition = function(self, target)
@@ -59,9 +60,6 @@ PedLogicAttackClass.checkAndUpdateTarget = function(self)
     if getNormalAngle(angleBetween) > 30 then
         self._ped:setRotation(0,0,self._ped:getData('rotateTo'))
     end
-    -- self._ped:setRotation(0,0,self._ped:getData('rotateTo'))
-    -- self._ped:setCameraRotation(self._ped:getData('rotateTo'))
-    -- self._ped:setLookAt(aimTarget, 100, 100,target )
 end
 
 PedLogicAttackClass.canAttack = function(self)

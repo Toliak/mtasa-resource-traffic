@@ -351,12 +351,10 @@ end)
 local function getClientDebugInfoString(ped)
     local distance = (ped:getPosition() - localPlayer:getPosition()):getLength()
     local zone = (distance <= SPAWN_RED_RADIUS) and '#ff0000red' or '#00ff00green'
-    local rotateTo = ped:getData('rotateTo') or 'NIL'
     local rotation = ped:getRotation().z
 
     local message = ''
     message = message .. ('#FFFFFFzone: %s\n'):format(zone)
-    message = message .. ('#FFFFFFrotateTo: %s\n'):format(rotateTo)
     message = message .. ('#FFFFFFrotation: %s\n'):format(rotation)
     message = message .. ('#FFFFFFspawnRotation: %s\n'):format(ped:getData('spawnRotation') or 'NIL')
     message = message .. ('#FFFFFFHP: %s\n'):format(ped:getHealth())
@@ -432,12 +430,14 @@ addEventHandler('onClientRender', root, function()
         if customData[ped] then
             local targetPivot = customData[ped]['targetPivot']
 
-            dxDrawLine3D(
-                    bonePosition,
-                    targetPivot,
-                    0x55801D15,
-                    2                        -- width
-            )
+            if targetPivot then
+                dxDrawLine3D(
+                        bonePosition,
+                        targetPivot,
+                        0x55801D15,
+                        2                        -- width
+                )
+            end
         end
     end
 end)

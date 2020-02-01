@@ -10,7 +10,7 @@ addSharedEventHandler('onClientPedRequestAnswer', resourceRoot, function(pedDict
         logic:checkAndUpdateDirection()
         logic:updateNextNode()
         logic:updateNextNodeHelper()
-        logic:updateRotationTo(true)
+        logic:updateRotation(true)
     end
 end)
 

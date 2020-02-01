@@ -26,7 +26,7 @@ function checkPedKeys()
     for ped, _ in pairs(peds) do
         local logic = getPedLogic(ped, pedContainer)
 
-        logic:updateRotationTo()
+        logic:updateRotation()
 
         local states = logic:getControlStates()
         setPedControlStateShared(ped, states)
@@ -40,7 +40,7 @@ function checkPedRotation(msec)
         local logic = getPedLogic(ped, pedContainer)
         
         logic:checkAndSetSpawnRotation()
-        logic:checkAndUpdateRotation(msec)
+        logic:checkAndUpdateRotation()
     end
 end
 addEventHandler('onClientPreRender', root, checkPedRotation)

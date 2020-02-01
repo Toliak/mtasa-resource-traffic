@@ -103,19 +103,32 @@ PedLogicWalkClass = {
         return newDirection
     end,
 
-    updateRotationTo = function(self, isSpawnRotation)
+    updateRotation = function(self, isSpawnRotation)
         local node = self:getNextHelperNode() or self:getNextNode()
         local angle = getAngleBetweenPoints(self._ped:getPosition(), node:getPosition())
         local rotation = getNormalAngle(math.deg(angle) - 90)
 
-        self._ped:setData('rotateTo', rotation, true)
+        self._ped:setCameraRotation(- rotation)
+        self._ped:setData('rotation', rotation, true)
 
         if isSpawnRotation then
             customData[self._ped].isSpawnRotationAvailable = true
             self._ped:setData('spawnRotation', rotation, true)
         end
+    end,
 
-        return rotation
+    -- update remote ped camera rotation
+    checkAndUpdateRotation = function(self)
+        if self._pedContainer:isPedInContainer(self._ped) then
+            return false
+        end
+
+        local rotation = self._ped:getData('rotation')
+        if type(rotation) ~= 'number' then
+            return false
+        end
+
+        self._ped:setCameraRotation(- rotation)
     end,
 
     checkAndSetSpawnRotation = function(self)
@@ -135,29 +148,6 @@ PedLogicWalkClass = {
 
         self._ped:setRotation(Vector3(0, 0, spawnRotation))
         customData[self._ped].isSpawnRotationAvailable = false
-    end,
-
-    checkAndUpdateRotation = function(self, msec)
-        if not self:canBeRotated() then
-            return false
-        end
-
-        local rotateTo = self._ped:getData('rotateTo')
-        if rotateTo == false then
-            return false
-        end
-
-        if self._ped:getRotation().z ~= rotateTo and compareWithPrecision(self._ped:getRotation().z, rotateTo, 15) then
-            self._ped:setRotation(Vector3(0, 0, rotateTo))
-
-        elseif self._ped:getRotation().z ~= rotateTo then
-            local rotation = self._ped:getRotation().z
-
-            self._ped:setRotation(
-                Vector3(0, 0, rotation + PED_ROTATION_SPEED * msec / 1000 * getMinAngleSign(rotation, rotateTo)))
-        end
-        
-        return true
     end,
 
     _checkSight = function(self, angleDelta)
