@@ -31,6 +31,14 @@ PedLogicAttackClass.getTargetPivotPosition = function(self, target)
     return originalPosition + Vector3(velocityDelta.x, velocityDelta.y, 0)
 end
 
+PedLogicAttackClass.canBeRotated = function(self)
+    if self:canAttack() then
+        return false
+    end
+
+    return PedLogicWalkClass.canBeRotated(self)
+end
+
 PedLogicAttackClass.checkAndUpdateTarget = function(self)
     local target = self._pedContainer:getData(self._ped, 'attackTarget')
     if not isElement(target) then
@@ -45,6 +53,11 @@ PedLogicAttackClass.checkAndUpdateTarget = function(self)
     customData[self._ped]['targetPivot'] = aimTarget
 
     self._ped:setAimTarget(aimTarget)
+
+    local angleBetween = math.deg(getAngleBetweenPoints(self._ped:getPosition(), aimTarget))
+    if getNormalAngle(angleBetween) > 30 then
+        self._ped:setRotation(0,0,self._ped:getData('rotateTo'))
+    end
     -- self._ped:setRotation(0,0,self._ped:getData('rotateTo'))
     -- self._ped:setCameraRotation(self._ped:getData('rotateTo'))
     -- self._ped:setLookAt(aimTarget, 100, 100,target )
