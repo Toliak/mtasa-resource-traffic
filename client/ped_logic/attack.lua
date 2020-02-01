@@ -44,6 +44,7 @@ PedLogicAttackClass.checkAndUpdateTarget = function(self)
     if not isElement(target) then
         return
     end
+    target = target:getOccupiedVehicle() or target
     
     local pivot = self:getTargetPivotPosition(target)
     local delta = pivot - self._ped:getPosition()
@@ -69,8 +70,10 @@ PedLogicAttackClass.canAttack = function(self)
         return false
     end
     target = target:getOccupiedVehicle() or target
+
+    local aimPosition = self:getTargetPivotPosition(target)
     
-    local distanceToTarget = (target:getPosition() - self._ped:getPosition()):getLength()
+    local distanceToTarget = (aimPosition - self._ped:getPosition()):getLength()
     local attackDistance = PED_MIN_ATTACK_DISTANCE[self._ped:getWeapon()] or 1
 
     if target:getType() == 'vehicle' then
@@ -81,7 +84,20 @@ PedLogicAttackClass.canAttack = function(self)
         return false
     end
 
-    return true
+    local isSightClear = isLineOfSightClear(
+        self._ped:getBonePosition(7),
+        aimPosition,
+        true,       -- checkBuildings
+        true,       -- checkVehicles
+        false,       -- checkPeds
+        true,       -- checkObjects
+        true,       -- checkDummies
+        true,      -- seeThroughStuff
+        false,      -- ignoreSomeObjectsForCamera
+        nil     -- ignoredElement
+    )
+
+    return isSightClear
 end
 
 PedLogicAttackClass.getControlStatesAttack = function(self)
