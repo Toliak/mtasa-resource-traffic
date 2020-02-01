@@ -167,15 +167,14 @@ PedLogicWalkClass = {
 
         local angle = math.rad(rotation + 90)
 
-        local LENGTH = 2
-        local START_LENGTH = 0.1
-        local SIGHT_Z_OFFSET = {-0.4, 0.2}
+        local LENGTH = 4
+        local SIGHT_Z_OFFSET = {-0.6, 0.2}
         local CRITICAL_DISTANCE = 0.8
 
         for _, z in pairs(SIGHT_Z_OFFSET) do
             local currentAngle = angle + angleDelta
 
-            local startPoint = self._ped:getPosition()
+            local startPoint = self._ped:getPosition() + Vector3(0,0,z)
             local endPoint = startPoint + Vector3(
                 LENGTH * math.cos(currentAngle),
                 LENGTH * math.sin(currentAngle), 
@@ -209,11 +208,11 @@ PedLogicWalkClass = {
     end,
 
     checkLeftSight = function(self)
-        return self:_checkSight(math.rad(40))
+        return self:_checkSight(math.rad(25)) or self:_checkSight(math.rad(60))
     end,
 
     checkRightSight = function(self)
-        return self:_checkSight(math.rad(-40))
+        return self:_checkSight(math.rad(-25)) or self:_checkSight(math.rad(-60))
     end,
 
     checkFrontSight = function(self)
