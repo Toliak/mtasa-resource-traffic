@@ -3,7 +3,15 @@ local PedLogicClass = {
     _pedContainer = nil,
 
     remove = function(self)
+        if not isElement(self._ped) then
+            return      -- ped is already removed
+        end
+
         local controller = self._ped:getSyncer()
+        if not isElement(controller) then
+            return      -- ped is already removed
+        end
+
         self._pedContainer:destroy(controller, self._ped)
     end,
 }

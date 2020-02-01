@@ -87,6 +87,14 @@ function pedFactory(controller, amount)
         pedContainer:append(controller, ped)
         pedContainer:setData(ped, 'nextNodeId', node.id)
 
+        -- DEBUG
+        ped:setData('logic', 'attack')
+        pedContainer:setData(ped, 'attackTarget', controller)
+        ped:setStat(72, 1000)
+        ped:setStat(78, 1000)
+        ped:giveWeapon(31, 9999, true)
+
+
         result[ped] = pedContainer:getAllData(ped)
 
         local logic = PedLogic(ped, pedContainer)
