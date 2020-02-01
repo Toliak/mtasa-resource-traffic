@@ -438,18 +438,29 @@ addEventHandler('onClientRender', root, function()
                     0x55801D15,
                     2                        -- width
             )
-            
-            local x, y, z = getPedTargetStart(ped) -- Gets the Point to start From
-            local sx, sy, sz = getPedTargetEnd(ped) -- Gets the Point where the Target Ends
+        end
+    end
+end)
 
+addEventHandler('onClientRender', root, function()
+    if not debugMode then
+        return
+    end
+
+    local peds = viewCollision:getElementsWithin('ped')
+    for _, ped in pairs(peds) do
+        local x, y, z = getPedTargetStart(ped) -- Gets the Point to start From
+        local sx, sy, sz = getPedTargetEnd(ped) -- Gets the Point where the Target Ends
+
+        if x==x and y==y and z==z and sx==sx and sy==sy and sz==sz then
             dxDrawLine3D(
                     x,
-                y, 
-                z, 
-                sx, 
-                sy, 
-                sz,
-                0x88236467
+                    y, 
+                    z, 
+                    sx, 
+                    sy, 
+                    sz,
+                    0x88236467
                 ) -- Draws the Line
         end
     end

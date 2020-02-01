@@ -1,7 +1,7 @@
 PedLogicAttackClass = classCopy(PedLogicWalkClass)
 
 PedLogicAttackClass.updateRotationToTarget = function(self, target)
-    local target = self._pedContainer:getData(self._ped, 'attackTarget')
+    local target = self._ped:getData('attackTarget')
     if not isElement(target) then
         return
     end
@@ -13,7 +13,7 @@ PedLogicAttackClass.updateRotationToTarget = function(self, target)
 end
 
 PedLogicAttackClass.updateRotationTo = function(self)
-    local target = self._pedContainer:getData(self._ped, 'attackTarget')
+    local target = self._ped:getData('attackTarget')
     if not isElement(target) then
         return PedLogicWalkClass.updateRotationTo(self)
     end
@@ -40,7 +40,7 @@ PedLogicAttackClass.canBeRotated = function(self)
 end
 
 PedLogicAttackClass.checkAndUpdateTarget = function(self)
-    local target = self._pedContainer:getData(self._ped, 'attackTarget')
+    local target = self._ped:getData('attackTarget')
     if not isElement(target) then
         return
     end
@@ -65,7 +65,7 @@ PedLogicAttackClass.checkAndUpdateTarget = function(self)
 end
 
 PedLogicAttackClass.canAttack = function(self)
-    local target = self._pedContainer:getData(self._ped, 'attackTarget')
+    local target = self._ped:getData('attackTarget')
     if not isElement(target) then
         return false
     end
@@ -88,7 +88,7 @@ PedLogicAttackClass.canAttack = function(self)
         self._ped:getBonePosition(7),
         aimPosition,
         true,       -- checkBuildings
-        true,       -- checkVehicles
+        false,       -- checkVehicles
         false,       -- checkPeds
         true,       -- checkObjects
         true,       -- checkDummies
@@ -143,7 +143,7 @@ end
 PedLogicAttackClass._checkSight = function(self, angleDelta)
     local result = PedLogicWalkClass._checkSight(self, angleDelta)
 
-    local target = self._pedContainer:getData(self._ped, 'attackTarget')
+    local target = self._ped:getData('attackTarget')
     if not isElement(target) then
         return result
     end
@@ -161,7 +161,7 @@ PedLogicAttackClass._checkSight = function(self, angleDelta)
 end
 
 PedLogicAttackClass.updateNextNodeHelper = function(self)
-    local target = self._pedContainer:getData(self._ped, 'attackTarget')
+    local target = self._ped:getData('attackTarget')
     if isElement(target) then
         return
     end

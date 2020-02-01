@@ -46,8 +46,8 @@ end
 addEventHandler('onClientPreRender', root, checkPedRotation)
 
 function checkPedTarget(msec)
-    local peds = pedContainer._table
-    for ped, _ in pairs(peds) do
+    local pedList = viewCollision:getElementsWithin('ped')
+    for _, ped in pairs(pedList) do
         local logic = getPedLogic(ped, pedContainer)
 
         logic:checkAndUpdateTarget()
