@@ -88,7 +88,7 @@ function pedFactory(controller, amount)
         pedContainer:setData(ped, 'nextNodeId', node.id)
 
         -- DEBUG
-        ped:setData('logic', 'walk')
+        ped:setData('logic', 'attack')
         ped:setData('attackTarget', controller)
 
         if math.random() > 0.8 then

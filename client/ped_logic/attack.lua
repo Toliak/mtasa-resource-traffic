@@ -58,7 +58,7 @@ PedLogicAttackClass.checkAndUpdateTarget = function(self)
 
     local angleBetween = math.deg(getAngleBetweenPoints(self._ped:getPosition(), aimTarget))
     if getNormalAngle(angleBetween) > 30 then
-        self._ped:setRotation(0,0,self._ped:getData('rotateTo'))
+        self._ped:setRotation(0,0,self._ped:getData('rotation'))
     end
 end
 

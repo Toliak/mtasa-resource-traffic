@@ -1,6 +1,6 @@
 -- spawn point
 
-local debugMode = true
+local debugMode = false
 local currentNode = nil
 
 -- set current node
