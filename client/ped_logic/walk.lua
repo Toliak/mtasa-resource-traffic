@@ -169,7 +169,7 @@ PedLogicWalkClass = {
 
         local LENGTH = 2
         local START_LENGTH = 0.1
-        local SIGHT_Z_OFFSET = {-0.3, 0.3}
+        local SIGHT_Z_OFFSET = {-0.4, 0.2}
         local CRITICAL_DISTANCE = 0.8
 
         for _, z in pairs(SIGHT_Z_OFFSET) do
