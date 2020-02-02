@@ -382,6 +382,9 @@ PedLogicWalkClass = {
     getControlStatesDefault = function(self)
         return { 
             walk = true,
+            fire = false,
+            aim_weapon = false,
+            sprint = false,
             forwards = false,
             backwards = false,
             right = false,

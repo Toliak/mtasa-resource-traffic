@@ -25,14 +25,25 @@ end
 
 local function createRandomPed(position)
     local PED_DATA = { 
-        {35, 118},
-        {43, 118},
-        {46, 118},
+        {35, 118, 'walk'},
+        {43, 118, 'walk'},
+        {46, 118, 'walk'},
+
+        {12, 129, 'walk'},
+        {40, 129, 'walk'},
+        {76, 129, 'walk'},
+        {69, 129, 'walk'},
+
+        {102, 122, 'attack'},
+        {108, 121, 'attack'},
     }
     local data = PED_DATA[math.random(1, #PED_DATA)]
 
     local ped = Ped(data[1], position)
     ped:setWalkingStyle(data[2])
+    
+    ped:setData('logic', data[3])
+
     return ped
 end
 
@@ -75,7 +86,7 @@ function pedFactory(controller, amount)
     local collision = playerCollision:getOrCreateCollision(controller)
     local inCollision = #collision:getElementsWithin('ped')
 
-    available = math.min(available, MAX_PEDS - inCollision)
+    available = math.min(available, MAX_PEDS - inCollision, MAX_PED_PER_SPAWN)
 
     local pathNodesGreen = getAvailableGreenNodes(controller)
 
@@ -99,14 +110,11 @@ function pedFactory(controller, amount)
         pedContainer:append(controller, ped)
         pedContainer:setData(ped, 'nextNodeId', node.id)
 
-        -- DEBUG
-        if math.random() > 0.7 then
-            ped:setData('logic', 'attack')
-        else
-            ped:setData('logic', 'walk')
+        if ped:getData('logic') == 'attack' then
+            ped:setData('attackTarget', controller)
         end
-        ped:setData('attackTarget', controller)
 
+        -- DEBUG
         local random = math.random()
         if random > 0.8 then
             ped:giveWeapon(31, 9999, true)
@@ -115,7 +123,6 @@ function pedFactory(controller, amount)
         elseif random > 0.3 then
             ped:giveWeapon(22, 9999, true)
         end
-
 
         result[ped] = pedContainer:getAllData(ped)
 

@@ -14,3 +14,15 @@ function getPedLogic(ped, ...)
 
     return PedLogicWalk(ped, ...)
 end
+
+function changePedLogic(ped)
+    local logicName = ped:getData('logic')
+    if logicName == 'attack' then
+        local target = ped:getData('attackTarget')
+        
+        if not isElement(target) or target:isDead() then
+            ped:setData('logic', 'walk')
+            ped:setData('attackTarget', false)
+        end
+    end
+end

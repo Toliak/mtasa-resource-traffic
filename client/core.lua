@@ -64,6 +64,8 @@ function checkPedState()
         logic:updateNextNodeHelper()
 
         logic:checkAndUpdateSight()
+        
+        changePedLogic(ped)     -- check logic change
     end
 end
 setTimer(checkPedState, CHECK_TIME_PED_STATE, 0)
@@ -87,12 +89,29 @@ addEventHandler('onClientPedDamage', root, function(attacker, weapon, bodypart, 
     cancelEvent()
 end)
 
+-- TODO: should it work for all (include not cotrolled) peds ??
 addEventHandler('onClientPedDamage', root, function(attacker, weapon, bodypart, loss)
-    if attacker ~= localPlayer then
+    if isElement(attacker) and attacker:getType() == 'player' and attacker ~= localPlayer then
         return
     end
 
     if (not source:getData('logic')) or source:getData('logic') == 'walk' then
+        if source:getWeapon() ~= 0 then
+            local target = nil
+            if isElement(attacker) and attacker:getType() == 'vehicle' and attacker:getOccupant(0) then
+                target = attacker:getOccupant(0)
+            elseif isElement(attacker) and (attacker:getType() == 'player' or attacker:getType() == 'ped') then
+                target = attacker
+            end
+            
+            if isElement(target) then
+                source:setData('attackTarget', target)
+                source:setData('logic', 'attack')
+            end
+            
+            return
+        end
+
         source:setData('logic', 'run')
     end
 end)
