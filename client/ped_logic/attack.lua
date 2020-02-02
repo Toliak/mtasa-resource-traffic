@@ -58,8 +58,20 @@ PedLogicAttackClass.checkAndUpdateTarget = function(self)
 
     local angleBetween = math.deg(getAngleBetweenPoints(self._ped:getPosition(), aimTarget))
     if getNormalAngle(angleBetween) > 30 then
-        self._ped:setRotation(0,0,self._ped:getData('rotation'))
+
+        -- do not rotate if going aroung
+        if not self._ped:getData('goesAround') then
+            self._ped:setRotation(0,0,self._ped:getData('rotation'))
+        end
     end
+end
+
+PedLogicAttackClass.canGoAround = function(self)
+    if self:canAttack() then
+        return false
+    end
+
+    return PedLogicWalkClass.canGoAround(self)
 end
 
 PedLogicAttackClass.canAttack = function(self)
