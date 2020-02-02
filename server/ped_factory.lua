@@ -36,15 +36,7 @@ local function createRandomPed(position)
     return ped
 end
 
-function pedFactory(controller, amount)
-    local available = MAX_PEDS - pedContainer:getLength(controller)
-    available = math.min(available, amount)
-
-    local collision = playerCollision:getOrCreateCollision(controller)
-    local inCollision = #collision:getElementsWithin('ped')
-
-    available = math.min(available, MAX_PEDS - inCollision)
-
+local function getAvailableGreenNodes(controller)
     -- get and filter path nodes
     local pathNodes = PATH_TREE:findInSphere(controller.position, SPAWN_GREEN_RADIUS)
     local pathNodesGreen = {}                         -- filtered path nodes
@@ -62,10 +54,30 @@ function pedFactory(controller, amount)
         if not playerBlocked then
             local distance = (pathNode:getPosition() - controller.position):getLength()
             if distance > SPAWN_RED_RADIUS then
-                table.insert(pathNodesGreen, pathNode)
+
+                -- check time availability
+                if not pathNode:isPlayerCooldownActive(controller) then
+                    table.insert(pathNodesGreen, pathNode)
+                    pathNode:setPlayerCooldown(controller, NODE_SPAWN_COOLDOWN)
+                end
+
             end
         end
     end
+
+    return pathNodesGreen
+end
+
+function pedFactory(controller, amount)
+    local available = MAX_PEDS - pedContainer:getLength(controller)
+    available = math.min(available, amount)
+
+    local collision = playerCollision:getOrCreateCollision(controller)
+    local inCollision = #collision:getElementsWithin('ped')
+
+    available = math.min(available, MAX_PEDS - inCollision)
+
+    local pathNodesGreen = getAvailableGreenNodes(controller)
 
     if #pathNodesGreen == 0 then
         return {}
