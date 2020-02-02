@@ -484,3 +484,12 @@ addEventHandler('onClientRender', root, function()
         0
     )
 end)
+
+-- welcome message
+
+addEventHandler('onClientResourceStart', resourceRoot, function()
+    outputChatBox('======================================')
+    outputChatBox('Welcome!')
+    outputChatBox('Ped traffic system works in Angel Pine')
+    outputChatBox('======================================')
+end)
