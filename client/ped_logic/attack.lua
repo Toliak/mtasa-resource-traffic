@@ -33,7 +33,7 @@ end
 PedLogicAttackClass.getTargetPivotPosition = function(self, target)
     local originalPosition = target:getPosition()
     if target:getType() == 'player' or target:getType() == 'ped' then
-        originalPosition = target:getBonePosition(2)
+        originalPosition = target:getBonePosition(3)
     end
 
     local velocityDelta = target:getVelocity() * 10

@@ -467,3 +467,19 @@ addEventHandler('onClientRender', root, function()
 end)
 
 
+-- fps
+
+local fps = 0
+addEventHandler('onClientPreRender', root, function(msec)
+    fps = math.floor(1000 / msec)
+end)
+
+addEventHandler('onClientRender', root, function()
+    local screenSize = Vector2(guiGetScreenSize())
+    
+    dxDrawText(
+        fps,
+        screenSize.x - 15,
+        0
+    )
+end)

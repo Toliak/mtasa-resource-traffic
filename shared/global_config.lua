@@ -15,7 +15,7 @@ PED_WAIT_TIME_ATTACK = 100          -- ped wait before going around obstacle (at
 PED_GO_AROUND_TIME = 600            -- ped go left/right/back from obstacle
 PED_GO_AROUND_TIME_ATTACK = 1500           -- ped go left/right/back from obstacle (attack logic)
 PED_DEATH_REMOVE = 1500             -- remove ped after death
-PED_AIM_DISTANCE = 50               -- constant aim distance
+PED_AIM_DISTANCE = 30               -- constant aim distance
 
 -- dict<weaponId, distance>
 -- TODO get rid of this: Ped:getTargetStart, Ped:getTargetEnd
