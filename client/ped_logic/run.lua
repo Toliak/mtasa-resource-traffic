@@ -9,10 +9,12 @@ PedLogicRunClass.getControlStatesDefault = function()
     return result
 end
 
-PedLogicRunClass.checkAndUpdateWait = function(self, waitTime)
-    if self._ped:getData('waiting') then
-        self._ped:setData('waiting', false)
-    end
+PedLogicRunClass.getWaitTime = function(self)
+    return 0
+end
+
+PedLogicRunClass.getGoAroundTime = function(self)
+    return PED_GO_AROUND_TIME / 2
 end
 
 function PedLogicRun(ped, pedContainer)

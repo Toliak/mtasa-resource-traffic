@@ -88,14 +88,19 @@ function pedFactory(controller, amount)
         pedContainer:setData(ped, 'nextNodeId', node.id)
 
         -- DEBUG
-        ped:setData('logic', 'attack')
+        if math.random() > 0.7 then
+            ped:setData('logic', 'attack')
+        else
+            ped:setData('logic', 'walk')
+        end
         ped:setData('attackTarget', controller)
 
-        if math.random() > 0.8 then
+        local random = math.random()
+        if random > 0.8 then
             ped:giveWeapon(31, 9999, true)
-        elseif math.random() > 0.5 then
+        elseif random > 0.5 then
             ped:giveWeapon(25, 9999, true)
-        elseif math.random() > 0.3 then
+        elseif random > 0.3 then
             ped:giveWeapon(22, 9999, true)
         end
 

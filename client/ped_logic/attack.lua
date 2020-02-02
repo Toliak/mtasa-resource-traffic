@@ -1,5 +1,9 @@
 PedLogicAttackClass = classCopy(PedLogicWalkClass)
 
+PedLogicRunClass.getWaitTime = function(self)
+    return PED_WAIT_TIME_ATTACK
+end
+
 PedLogicAttackClass.updateRotationTarget = function(self, target)
     local target = self._ped:getData('attackTarget')
     if not isElement(target) then
