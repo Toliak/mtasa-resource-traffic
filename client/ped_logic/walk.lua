@@ -18,6 +18,16 @@ PedLogicWalkClass = {
         return self._pedContainer:getData(self._ped, 'direction')
     end,
 
+    -- time to wait before going around obstacle
+    getWaitTime = function(self)
+        return PED_WAIT_TIME
+    end,
+
+    -- time to wait until going around obstacle stops
+    getGoAroundTime = function(self)
+        return PED_GO_AROUND_TIME
+    end,
+
     -- can ped be rotated
     canBeRotated = function(self)
         if self._ped:isDead() or not self._ped:isOnGround() then
@@ -245,20 +255,22 @@ PedLogicWalkClass = {
             return false
         end
 
+        local waitTime = self:getWaitTime()
+        local goAroundTime = self:getGoAroundTime()
         if self:checkFrontSight() then
             self._ped:setData('goesAround', 'back')
-            self:checkAndUpdateWait(PED_WAIT_TIME)
-            self:checkAndUpdateGoAroundTime(PED_GO_AROUND_TIME + PED_WAIT_TIME)
+            self:checkAndUpdateWait(waitTime)
+            self:checkAndUpdateGoAroundTime(goAroundTime + waitTime)
 
         elseif self:checkLeftSight() then
             self._ped:setData('goesAround', 'right')
-            self:checkAndUpdateWait(PED_WAIT_TIME)
-            self:checkAndUpdateGoAroundTime(PED_GO_AROUND_TIME + PED_WAIT_TIME)
+            self:checkAndUpdateWait(waitTime)
+            self:checkAndUpdateGoAroundTime(goAroundTime + waitTime)
 
         elseif self:checkRightSight() then
             self._ped:setData('goesAround', 'left')
-            self:checkAndUpdateWait(PED_WAIT_TIME)
-            self:checkAndUpdateGoAroundTime(PED_GO_AROUND_TIME + PED_WAIT_TIME)
+            self:checkAndUpdateWait(waitTime)
+            self:checkAndUpdateGoAroundTime(goAroundTime + waitTime)
 
         else
             self._ped:setData('goesAround', false)
@@ -370,6 +382,9 @@ PedLogicWalkClass = {
     getControlStatesDefault = function(self)
         return { 
             walk = true,
+            fire = false,
+            aim_weapon = false,
+            sprint = false,
             forwards = false,
             backwards = false,
             right = false,

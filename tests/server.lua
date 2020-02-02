@@ -513,6 +513,26 @@ TESTS = {
         assert(pathNode:getPosition().y == 2)
         assert(pathNode:getPosition().z == 1)
     end,
+    function()
+        -- Test setPlayerCooldown, getPlayerCooldown
+
+        local pathNode = PathNode(0, 0, 0)
+        local ped = FIXTURES[1]
+        assert(pathNode:getPlayerCooldown(ped) == 0)
+
+        pathNode:setPlayerCooldown(ped, 10000)
+        assert(pathNode:getPlayerCooldown(ped) >= getTickCount())
+    end,
+    function()
+        -- Test isPlayerCooldownActive
+
+        local pathNode = PathNode(0, 0, 0)
+        local ped = FIXTURES[1]
+        assert(pathNode:isPlayerCooldownActive(ped) == false)
+
+        pathNode:setPlayerCooldown(ped, 10000)
+        assert(pathNode:isPlayerCooldownActive(ped) == true)
+    end,
 
     -- PedContainer tests
     function()

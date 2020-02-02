@@ -23,7 +23,8 @@ end)
 local function checkSpawn()
     -- spawn peds
     if pedContainer:getLength() < MAX_PEDS then
-        triggerServerEvent('onPedRequest', resourceRoot, MAX_PEDS_PER_SPAWN)
+        local pedAmount = MAX_PEDS - pedContainer:getLength()
+        triggerServerEvent('onPedRequest', resourceRoot, pedAmount)
     end
 end
 setTimer(checkSpawn, CHECK_TIME_SPAWN, 0)

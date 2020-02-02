@@ -27,7 +27,11 @@ local function releasePeds(player, pedDict)
             end
 
             -- New controller
-
+            
+            if ped:getData('logic') == 'attack' then
+                ped:setData('attackTarget', newController)
+            end
+            
             pedContainer:changePedController(player, ped, newController)
             triggerClientEvent(
                     newController,
@@ -35,6 +39,8 @@ local function releasePeds(player, pedDict)
                     resourceRoot,
                     { [ped] = pedContainer:getAllData(ped) }
             )
+
+            
         end
     end
 end

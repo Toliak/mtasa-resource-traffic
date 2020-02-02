@@ -1,5 +1,13 @@
 PedLogicAttackClass = classCopy(PedLogicWalkClass)
 
+PedLogicRunClass.getWaitTime = function(self)
+    return PED_WAIT_TIME_ATTACK
+end
+
+PedLogicRunClass.getGoAroundTime = function(self)
+    return PED_GO_AROUND_TIME_ATTACK
+end
+
 PedLogicAttackClass.updateRotationTarget = function(self, target)
     local target = self._ped:getData('attackTarget')
     if not isElement(target) then
@@ -25,7 +33,7 @@ end
 PedLogicAttackClass.getTargetPivotPosition = function(self, target)
     local originalPosition = target:getPosition()
     if target:getType() == 'player' or target:getType() == 'ped' then
-        originalPosition = target:getBonePosition(2)
+        originalPosition = target:getBonePosition(3)
     end
 
     local velocityDelta = target:getVelocity() * 10
@@ -58,8 +66,20 @@ PedLogicAttackClass.checkAndUpdateTarget = function(self)
 
     local angleBetween = math.deg(getAngleBetweenPoints(self._ped:getPosition(), aimTarget))
     if getNormalAngle(angleBetween) > 30 then
-        self._ped:setRotation(0,0,self._ped:getData('rotation'))
+
+        -- do not rotate if going aroung
+        if not self._ped:getData('goesAround') then
+            self._ped:setRotation(0,0,self._ped:getData('rotation'))
+        end
     end
+end
+
+PedLogicAttackClass.canGoAround = function(self)
+    if self:canAttack() then
+        return false
+    end
+
+    return PedLogicWalkClass.canGoAround(self)
 end
 
 PedLogicAttackClass.canAttack = function(self)
