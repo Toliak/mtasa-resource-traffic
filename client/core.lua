@@ -9,10 +9,6 @@ addEventHandler('onClientPedWasted', root, function()
     getPedLogic(source, pedContainer):onWasted()
 end)
 
-addSharedEventHandler('onClientPedWastedShit', resourceRoot, function(ped)
-    getPedLogic(ped, pedContainer):onWasted()
-end)
-
 -- @param table control-state
 local function setPedControlStateShared(ped, stateTable)
     for control, state in pairs(stateTable) do
@@ -90,6 +86,19 @@ addEventHandler('onClientPedDamage', root, function(attacker, weapon, bodypart, 
     end
     triggerServerEvent('onPedDamageShit', resourceRoot, source, weapon, bodypart, loss)
     cancelEvent()
+end)
+
+-- headshot
+addEventHandler('onClientPedDamage', root, function(attacker, weapon, bodypart, loss)
+    if attacker ~= localPlayer then
+        return
+    end
+
+    if bodypart ~= 9 then
+        return
+    end
+    
+    triggerServerEvent('onPedHeadshotShit', resourceRoot, source)
 end)
 
 -- TODO: should it work for all (include not cotrolled) peds ??
