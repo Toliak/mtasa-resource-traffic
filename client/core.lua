@@ -85,6 +85,9 @@ addEventHandler('onClientPedDamage', root, function(attacker, weapon, bodypart, 
         return
     end
 
+    if bodypart == 9 then
+        loss = 1000
+    end
     triggerServerEvent('onPedDamageShit', resourceRoot, source, weapon, bodypart, loss)
     cancelEvent()
 end)
