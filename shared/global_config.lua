@@ -19,7 +19,6 @@ PED_DEATH_REMOVE = 1500             -- remove ped after death
 PED_AIM_DISTANCE = 30               -- constant aim distance
 
 -- dict<weaponId, distance>
--- TODO get rid of this: Ped:getTargetStart, Ped:getTargetEnd
 PED_MIN_ATTACK_DISTANCE = {
     [0] = 1,
     [1] = 1,

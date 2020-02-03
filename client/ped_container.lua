@@ -71,8 +71,6 @@ local PedContainerClass = {
     end,
 
     toList = function(self)
-        -- TODO: test
-
         local result = {}
         for ped, _ in pairs(self._table) do
             table.insert(result, ped)
@@ -82,8 +80,6 @@ local PedContainerClass = {
     end,
 
     toDict = function(self)
-        -- TODO: test
-
         local result = {}
         for ped, _ in pairs(self._table) do
             result[ped] = self._data[ped]
