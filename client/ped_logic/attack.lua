@@ -102,6 +102,11 @@ PedLogicAttackClass.canAttack = function(self)
         return false
     end
 
+    local clickCooldown = self._pedContainer:getData(self._ped, 'clickCooldown') or 0
+    if clickCooldown > getTickCount() then
+        return false
+    end
+
     local isSightClear = isLineOfSightClear(
         self._ped:getBonePosition(7),
         aimPosition,
@@ -120,11 +125,20 @@ end
 
 PedLogicAttackClass.getControlStatesAttack = function(self)
     if not self:canAttack() then
+        iprint('fire false')
         return {
             fire = false,
             aim_weapon = false,
         }
     end
+
+    -- melee weapon - click release
+    -- looks like piece of trash
+    if self._ped:getWeapon() <= 15 then
+        self._pedContainer:setData(self._ped, 'clickCooldown', getTickCount() + PED_MELEE_CLICK_COOLDOWN)
+    end
+
+    iprint('fire true')
 
     return {
         fire = true,

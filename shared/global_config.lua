@@ -1,7 +1,7 @@
 SPAWN_RED_RADIUS = 30
 SPAWN_GREEN_RADIUS = 55
 
-MAX_PEDS = 16
+MAX_PEDS = 1
 MAX_PED_PER_SPAWN = 2
 CHECK_TIME_SPAWN = 150
 CHECK_TIME_RELEASE = 800
@@ -17,6 +17,7 @@ PED_GO_AROUND_TIME = 600            -- ped go left/right/back from obstacle
 PED_GO_AROUND_TIME_ATTACK = 1500           -- ped go left/right/back from obstacle (attack logic)
 PED_DEATH_REMOVE = 1500             -- remove ped after death
 PED_AIM_DISTANCE = 30               -- constant aim distance
+PED_MELEE_CLICK_COOLDOWN = 200      -- ... Must be not smaller than CHECK_TIME_PED_KEYS
 
 -- dict<weaponId, distance>
 PED_MIN_ATTACK_DISTANCE = {
