@@ -18,15 +18,18 @@ local function setPedControlStateShared(ped, stateTable)
 end
 
 function checkPedKeys()
-    local peds = pedContainer._table
-    for ped, _ in pairs(peds) do
-        local logic = getPedLogic(ped, pedContainer)
+    local task = coroutine.create(function()
+        local peds = pedContainer._table
+        for ped, _ in pairs(peds) do
+            local logic = getPedLogic(ped, pedContainer)
 
-        logic:updateRotation()
+            logic:updateRotation()
 
-        local states = logic:getControlStates()
-        setPedControlStateShared(ped, states)
-    end
+            local states = logic:getControlStates()
+            setPedControlStateShared(ped, states)
+        end
+    end)
+    coroutine.resume(task)
 end
 setTimer(checkPedKeys, CHECK_TIME_PED_KEYS, 0)
 
@@ -52,23 +55,29 @@ end
 addEventHandler('onClientRender', root, checkPedTarget)
 
 function checkPedState()
-    local peds = pedContainer._table
-    for ped, _ in pairs(peds) do
-        local logic = getPedLogic(ped, pedContainer)
+    local task = coroutine.create(function()
+        local peds = pedContainer._table
+        for ped, _ in pairs(peds) do
+            local logic = getPedLogic(ped, pedContainer)
 
-        logic:checkAndUpdateNextNode()
-        logic:updateNextNodeHelper()
+            logic:checkAndUpdateNextNode()
+            logic:updateNextNodeHelper()
 
-        logic:checkAndUpdateSight()
-    end
+            logic:checkAndUpdateSight()
+        end
+    end)
+    coroutine.resume(task)
 end
 setTimer(checkPedState, CHECK_TIME_PED_STATE, 0)
 
 function checkPedStateLong()
-    local peds = pedContainer._table
-    for ped, _ in pairs(peds) do
-        changePedLogic(ped)     -- check logic change
-    end
+    local task = coroutine.create(function()
+        local peds = pedContainer._table
+        for ped, _ in pairs(peds) do
+            changePedLogic(ped)     -- check logic change
+        end
+    end)
+    coroutine.resume(task)
 end
 setTimer(checkPedStateLong, CHECK_TIME_PED_STATE_LONG, 0)
 
