@@ -5,12 +5,6 @@ TreeNodeColor = {
     BLACK = 0,
 }
 
-function mergeLists(list1, list2)
-    for _, v in ipairs(list2) do
-        table.insert(list1, v)
-    end
-end
-
 local TreeNodeClass = {
     left = nil,
     right = nil,
@@ -214,13 +208,13 @@ local TreeNodeClass = {
         local nodes = {}
 
         if min < self.value and self.left ~= nil then
-            mergeLists(nodes, self.left:_getNodesInRange(min, max))
+            nodes = mergeLists(nodes, self.left:_getNodesInRange(min, max))
         end
         if min <= self.value and self.value <= max then
             table.insert(nodes, self)
         end
         if max > self.value and self.right ~= nil then
-            mergeLists(nodes, self.right:_getNodesInRange(min, max))
+            nodes = mergeLists(nodes, self.right:_getNodesInRange(min, max))
         end
 
         return nodes

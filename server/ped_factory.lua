@@ -24,25 +24,23 @@ local function randomSpawnNode(sourceNode)
 end
 
 local function createRandomPed(position)
-    local PED_DATA = { 
-        {35, 118, 'walk'},
-        {43, 118, 'walk'},
-        {46, 118, 'walk'},
+    local SKILLS = { 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79 }
 
-        {12, 129, 'walk'},
-        {40, 129, 'walk'},
-        {76, 129, 'walk'},
-        {69, 129, 'walk'},
-
-        {102, 122, 'attack'},
-        {108, 121, 'attack'},
-    }
     local data = PED_DATA[math.random(1, #PED_DATA)]
 
-    local ped = Ped(data[1], position)
-    ped:setWalkingStyle(data[2])
+    local ped = Ped(data.skin, position)
+    ped:setWalkingStyle(data.walkingStyle)
     
-    ped:setData('logic', data[3])
+    ped:setData('logic', data.defaultLogic)
+
+    for _, skill in pairs(SKILLS) do
+        ped:setStat(skill, math.random(100, 1000))
+    end
+
+    local randomWeapon = data.availableWeapons[math.random(1, #data.availableWeapons)]
+    if randomWeapon ~= 0 then
+        ped:giveWeapon(randomWeapon, 9999, true)
+    end
 
     return ped
 end
@@ -109,20 +107,6 @@ function pedFactory(controller, amount)
 
         pedContainer:append(controller, ped)
         pedContainer:setData(ped, 'nextNodeId', node.id)
-
-        if ped:getData('logic') == 'attack' then
-            ped:setData('attackTarget', controller)
-        end
-
-        -- DEBUG
-        local random = math.random()
-        if random > 0.8 then
-            ped:giveWeapon(31, 9999, true)
-        elseif random > 0.5 then
-            ped:giveWeapon(25, 9999, true)
-        elseif random > 0.3 then
-            ped:giveWeapon(22, 9999, true)
-        end
 
         result[ped] = pedContainer:getAllData(ped)
 

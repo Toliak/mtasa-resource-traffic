@@ -41,11 +41,16 @@ PedLogicAttackClass.getTargetPivotPosition = function(self, target)
 end
 
 PedLogicAttackClass.canBeRotated = function(self)
+    local result = PedLogicWalkClass.canBeRotated(self)
+    if not result then 
+        return false
+    end
+
     if self:canAttack() then
         return false
     end
 
-    return PedLogicWalkClass.canBeRotated(self)
+    return true
 end
 
 PedLogicAttackClass.checkAndUpdateTarget = function(self)
@@ -75,19 +80,33 @@ PedLogicAttackClass.checkAndUpdateTarget = function(self)
 end
 
 PedLogicAttackClass.canGoAround = function(self)
+    local result = PedLogicWalkClass.canGoAround(self)
+    if not result then 
+        return false
+    end
+
     if self:canAttack() then
         return false
     end
 
-    return PedLogicWalkClass.canGoAround(self)
+    return true
 end
 
 PedLogicAttackClass.canAttack = function(self)
+    if self._ped:isDead() then
+        return false
+    end
+
     local target = self._ped:getData('attackTarget')
     if not isElement(target) then
         return false
     end
     target = target:getOccupiedVehicle() or target
+
+    local clickCooldown = self._pedContainer:getData(self._ped, 'clickCooldown') or 0
+    if clickCooldown > getTickCount() then
+        return false
+    end
 
     local aimPosition = self:getTargetPivotPosition(target)
     
@@ -99,11 +118,6 @@ PedLogicAttackClass.canAttack = function(self)
     end
 
     if distanceToTarget > attackDistance then
-        return false
-    end
-
-    local clickCooldown = self._pedContainer:getData(self._ped, 'clickCooldown') or 0
-    if clickCooldown > getTickCount() then
         return false
     end
 
@@ -125,7 +139,6 @@ end
 
 PedLogicAttackClass.getControlStatesAttack = function(self)
     if not self:canAttack() then
-        iprint('fire false')
         return {
             fire = false,
             aim_weapon = false,
@@ -133,12 +146,9 @@ PedLogicAttackClass.getControlStatesAttack = function(self)
     end
 
     -- melee weapon - click release
-    -- looks like piece of trash
     if self._ped:getWeapon() <= 15 then
         self._pedContainer:setData(self._ped, 'clickCooldown', getTickCount() + PED_MELEE_CLICK_COOLDOWN)
     end
-
-    iprint('fire true')
 
     return {
         fire = true,

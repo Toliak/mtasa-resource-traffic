@@ -60,11 +60,17 @@ function checkPedState()
         logic:updateNextNodeHelper()
 
         logic:checkAndUpdateSight()
-        
-        changePedLogic(ped)     -- check logic change
     end
 end
 setTimer(checkPedState, CHECK_TIME_PED_STATE, 0)
+
+function checkPedStateLong()
+    local peds = pedContainer._table
+    for ped, _ in pairs(peds) do
+        changePedLogic(ped)     -- check logic change
+    end
+end
+setTimer(checkPedStateLong, CHECK_TIME_PED_STATE_LONG, 0)
 
 -- damage sync
 addEventHandler('onClientPedDamage', root, function(attacker, weapon, bodypart, loss)

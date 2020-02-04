@@ -328,6 +328,10 @@ PedLogicWalkClass = {
     end,
 
     canGoForward = function(self)
+        if self._ped:isDead() then
+            return false
+        end
+
         if self._ped:getData('goesAround') then
             return false
         end
@@ -341,6 +345,10 @@ PedLogicWalkClass = {
     end,
 
     canGoAround = function(self)
+        if self._ped:isDead() then
+            return false
+        end
+        
         if not self._ped:getData('goesAround') then
             return false
         end

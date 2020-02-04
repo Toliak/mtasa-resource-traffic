@@ -46,7 +46,9 @@ local PedContainerClass = {
     getData = function(self, ped, key)
         assert(isElement(ped), 'PedContainer.getData expected Ped at argument 2')
         assert(getElementType(ped) == 'ped', 'PedContainer.getData expected Ped at argument 2')
-
+        assert(self._data[ped] ~= nil, 
+                ('PedContainer.getData(%s, %s) Ped "%s" not found'):format(tostring(ped), tostring(key), tostring(isElement(ped))))
+        
         return self._data[ped][key]
     end,
 
