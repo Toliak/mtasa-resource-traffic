@@ -92,3 +92,8 @@ addEventHandler('onPlayerQuit', root, function()
     local task = coroutine.create(releasePeds)
     coroutine.resume(task, source, dict)
 end)
+
+-- Update random every 2 sec
+setTimer(function()
+    math.randomseed( getTickCount() )
+end, 2000, 0)
