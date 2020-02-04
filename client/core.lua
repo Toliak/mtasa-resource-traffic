@@ -9,10 +9,6 @@ addEventHandler('onClientPedWasted', root, function()
     getPedLogic(source, pedContainer):onWasted()
 end)
 
-addSharedEventHandler('onClientPedWastedShit', resourceRoot, function(ped)
-    getPedLogic(ped, pedContainer):onWasted()
-end)
-
 -- @param table control-state
 local function setPedControlStateShared(ped, stateTable)
     for control, state in pairs(stateTable) do
@@ -22,15 +18,18 @@ local function setPedControlStateShared(ped, stateTable)
 end
 
 function checkPedKeys()
-    local peds = pedContainer._table
-    for ped, _ in pairs(peds) do
-        local logic = getPedLogic(ped, pedContainer)
+    local task = coroutine.create(function()
+        local peds = pedContainer._table
+        for ped, _ in pairs(peds) do
+            local logic = getPedLogic(ped, pedContainer)
 
-        logic:updateRotation()
+            logic:updateRotation()
 
-        local states = logic:getControlStates()
-        setPedControlStateShared(ped, states)
-    end
+            local states = logic:getControlStates()
+            setPedControlStateShared(ped, states)
+        end
+    end)
+    coroutine.resume(task)
 end
 setTimer(checkPedKeys, CHECK_TIME_PED_KEYS, 0)
 
@@ -56,19 +55,31 @@ end
 addEventHandler('onClientRender', root, checkPedTarget)
 
 function checkPedState()
-    local peds = pedContainer._table
-    for ped, _ in pairs(peds) do
-        local logic = getPedLogic(ped, pedContainer)
+    local task = coroutine.create(function()
+        local peds = pedContainer._table
+        for ped, _ in pairs(peds) do
+            local logic = getPedLogic(ped, pedContainer)
 
-        logic:checkAndUpdateNextNode()
-        logic:updateNextNodeHelper()
+            logic:checkAndUpdateNextNode()
+            logic:updateNextNodeHelper()
 
-        logic:checkAndUpdateSight()
-        
-        changePedLogic(ped)     -- check logic change
-    end
+            logic:checkAndUpdateSight()
+        end
+    end)
+    coroutine.resume(task)
 end
 setTimer(checkPedState, CHECK_TIME_PED_STATE, 0)
+
+function checkPedStateLong()
+    local task = coroutine.create(function()
+        local peds = pedContainer._table
+        for ped, _ in pairs(peds) do
+            changePedLogic(ped)     -- check logic change
+        end
+    end)
+    coroutine.resume(task)
+end
+setTimer(checkPedStateLong, CHECK_TIME_PED_STATE_LONG, 0)
 
 -- damage sync
 addEventHandler('onClientPedDamage', root, function(attacker, weapon, bodypart, loss)
@@ -85,8 +96,24 @@ addEventHandler('onClientPedDamage', root, function(attacker, weapon, bodypart, 
         return
     end
 
+    if bodypart == 9 then
+        loss = 1000
+    end
     triggerServerEvent('onPedDamageShit', resourceRoot, source, weapon, bodypart, loss)
     cancelEvent()
+end)
+
+-- headshot
+addEventHandler('onClientPedDamage', root, function(attacker, weapon, bodypart, loss)
+    if attacker ~= localPlayer then
+        return
+    end
+
+    if bodypart ~= 9 then
+        return
+    end
+    
+    triggerServerEvent('onPedHeadshotShit', resourceRoot, source)
 end)
 
 -- TODO: should it work for all (include not cotrolled) peds ??

@@ -7,6 +7,7 @@ CHECK_TIME_SPAWN = 150
 CHECK_TIME_RELEASE = 800
 CHECK_TIME_PED_KEYS = 200
 CHECK_TIME_PED_STATE = 100
+CHECK_TIME_PED_STATE_LONG = 1500
 
 NODE_SPAWN_COOLDOWN = 3000
 
@@ -17,15 +18,45 @@ PED_GO_AROUND_TIME = 600            -- ped go left/right/back from obstacle
 PED_GO_AROUND_TIME_ATTACK = 1500           -- ped go left/right/back from obstacle (attack logic)
 PED_DEATH_REMOVE = 1500             -- remove ped after death
 PED_AIM_DISTANCE = 30               -- constant aim distance
+PED_MELEE_CLICK_COOLDOWN = 300      -- ... Must be not smaller than CHECK_TIME_PED_KEYS
+
+PED_GANG_ATTACK_MIN_DISTANCE = 25
 
 -- dict<weaponId, distance>
--- TODO get rid of this: Ped:getTargetStart, Ped:getTargetEnd
+local MELEE_DISTANCE = 1.5
 PED_MIN_ATTACK_DISTANCE = {
-    [0] = 1,
-    [1] = 1,
+    -- Melee
+    [0] = MELEE_DISTANCE,
+    [1] = MELEE_DISTANCE,
+    [2] = MELEE_DISTANCE,
+    [3] = MELEE_DISTANCE,
+    [4] = MELEE_DISTANCE,
+    [5] = MELEE_DISTANCE,
+    [6] = MELEE_DISTANCE,
+    [7] = MELEE_DISTANCE,
+    [8] = MELEE_DISTANCE,
+    [9] = MELEE_DISTANCE,
+    [10] = MELEE_DISTANCE,
+    [11] = MELEE_DISTANCE,
+    [12] = MELEE_DISTANCE,
+    [13] = MELEE_DISTANCE,
+    [14] = MELEE_DISTANCE,
+    [15] = MELEE_DISTANCE,
+
     [22] = 8,
-    [31] = 15,
+    [23] = 9,
+    [24] = 10,
+    
     [25] = 10,
+    [26] = 5,
+    [27] = 12,
+
+    [28] = 7,
+    [29] = 14,
+    [32] = 9,
+
+    [30] = 17,
+    [31] = 20,
 }
 
 

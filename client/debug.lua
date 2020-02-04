@@ -362,6 +362,12 @@ local function getClientDebugInfoString(ped)
     message = message .. ('#FFFFFFgoesAround: %s\n'):format(ped:getData('goesAround') or 'FALSE')
     message = message .. ('#FFFFFFgoesAroundTime: %s\n'):format(ped:getData('goesAroundTime') or 'FALSE')
     message = message .. ('#FFFFFFwaiting: %s\n'):format(ped:getData('waiting') or 'NIL')
+    message = message .. ('#FFFFFFfire: %s\n'):format(getPedControlState(ped, 'fire') and 'true' or 'false')
+
+    if pedContainer:isPedInContainer(ped) then
+        local clickCooldown = pedContainer:getData(ped, 'clickCooldown')
+        message = message .. ('#FFFFFFclickCooldown: %s\n'):format(clickCooldown or 'NIL')
+    end
 
     return message
 end
@@ -479,8 +485,17 @@ addEventHandler('onClientRender', root, function()
     local screenSize = Vector2(guiGetScreenSize())
     
     dxDrawText(
-        fps,
-        screenSize.x - 15,
+        fps .. "\n" .. getTickCount(),
+        screenSize.x - 100,
         0
     )
+end)
+
+-- welcome message
+
+addEventHandler('onClientResourceStart', resourceRoot, function()
+    outputChatBox('======================================')
+    outputChatBox('Welcome!')
+    outputChatBox('Ped traffic system works in Angel Pine')
+    outputChatBox('======================================')
 end)

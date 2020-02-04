@@ -72,12 +72,14 @@ end)
 addSharedEventHandler('onPedDamageShit', resourceRoot, function (ped, weapon, bodypart, loss)
     ped.health = ped.health - loss
 
-    local isDead = pedContainer:getData(ped, 'dead')
     if ped.health <= 0 and not isDead then
-        pedContainer:setData(ped, 'dead', true)
-        triggerEvent('onPedWasted', ped, 0, client, weapon, bodypart)
-        triggerClientEvent(ped:getSyncer(), 'onClientPedWastedShit', resourceRoot, ped)
+        ped:kill(client, weapon, bodypart)
     end
+end)
+
+addSharedEventHandler('onPedHeadshotShit', resourceRoot, function (ped)
+    ped:setHeadless(true)
+    ped:kill(client)
 end)
 
 addEventHandler('onPlayerQuit', root, function()
@@ -90,3 +92,8 @@ addEventHandler('onPlayerQuit', root, function()
     local task = coroutine.create(releasePeds)
     coroutine.resume(task, source, dict)
 end)
+
+-- Update random every 2 sec
+setTimer(function()
+    math.randomseed( getTickCount() )
+end, 2000, 0)

@@ -79,10 +79,28 @@ function mergeDicts(...)
     return result
 end
 
+function mergeLists(...)
+    local result = {}
+    for _, list in ipairs({...}) do
+        for _, v in ipairs(list) do
+            table.insert(result, v)
+        end
+    end
+    return result
+end
+
 function classCopy(original)
     local result = {}
     for key, value in pairs(original) do
         result[key] = value
+    end
+    return result
+end
+
+function listToSet(list)
+    local result = {}
+    for _, v in pairs(list) do
+        result[v] = true
     end
     return result
 end

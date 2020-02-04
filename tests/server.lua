@@ -757,4 +757,33 @@ TESTS = {
         assert(result['c'] == 3)
         assert(result['d'] == 9)
     end,
+
+    -- mergeLists test
+    function()
+        local result = mergeLists({1,2,3}, {"a", "b", "c"}, {-3, -4, -5})
+
+        assert(result[1] == 1)
+        assert(result[2] == 2)
+        assert(result[3] == 3)
+        assert(result[4] == "a")
+        assert(result[5] == "b")
+        assert(result[6] == "c")
+        assert(result[7] == -3)
+        assert(result[8] == -4)
+        assert(result[9] == -5)
+    end,
+
+    -- listToSet test
+    function()
+        local result = listToSet({1,4,8, 'yep'})
+
+        assert(result['yep'] == true)
+        assert(result[1] == true)
+        assert(result[4] == true)
+        assert(result[8] == true)
+
+        assert(result[2] == nil)
+        assert(result[3] == nil)
+        assert(result[7] == nil)
+    end,
 }
